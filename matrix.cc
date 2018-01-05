@@ -6,7 +6,7 @@
 *  NUMERICAL RECIPES: The Art of Scientific Computing.
 */
 
-#include "MatrixMath.h"
+#include "matrix.hh"
 
 #define NR_END 1
 

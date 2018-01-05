@@ -1,4 +1,3 @@
-//constants.h
 #include <WString.h>
 
 //debug settings.
@@ -28,9 +27,9 @@
 #define LOG_HEADER_STRING_FLIGHT "times, alts, vels, leftVel, rightVel, accels, rollAxisGrav, yawAxisGrav, pitchAxisGrav, rollAxisLin, yawAxisLin, pitchAxisLin, rollAxisGyro, yawAxisGyro, pitchAxisGyro, roll, yaw, pitch, vSPP, encPos, encPosCmd, limit_out, limit_in, encMax, encMin"
 
 /*To add a variable to be logged on the sd
-1) add a new field to the DataLog.supStat struct.
-2) add a new entry in the DataLog.logData() function
-3) add a new 'name' for your variable in DataLog.newFlight()*/
+1) add a new field to the log.supStat struct.
+2) add a new entry in the log.logData() function
+3) add a new 'name' for your variable in log.newFlight()*/
 
 //miscallaneous constants
 #define TIME_DIVISOR		100000			//time divisor to convert ms to sec

@@ -1,9 +1,12 @@
-#include "RCRClasses.h"
+#include "drag_inducers.hh"
 
+#if (ARDUINO >= 100)
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
-
-
-void DragBladesClass::init() {
+void DragInducers::init() {
 	//setup motor pins
 	pinMode(MOTOR_A, OUTPUT);
 	pinMode(MOTOR_B, OUTPUT);
@@ -22,7 +25,7 @@ void DragBladesClass::init() {
 Author: Ben
 */
 /**************************************************************************/
-void DragBladesClass::dragBladesCheck() {
+void DragInducers::dragBladesCheck() {
 	Serial.println("\r\n-----Drag Blades Check----");	
 	Serial.printf("encMin: %d\r\nencMax: %d\r\nencPos: %d\r\nInner limit pressed: %d\r\nOutter limit pressed: %d\r\n\r\n", encMin, encMax, encPos, !digitalRead(LIM_IN), !digitalRead(LIM_OUT) );
 }
@@ -34,7 +37,7 @@ fast the vehicle is moving and how fast the SPP thinks it should be moving
 Author: Ben
 */
 /**************************************************************************/
-int DragBladesClass::airBrakesGoToEncPos(float vehVel, float sppVel)
+int DragInducers::airBrakesGoToEncPos(float vehVel, float sppVel)
 {
 	float returnVal;
 	returnVal = -(sppVel - vehVel) * AIRBRAKES_GAIN;
@@ -50,7 +53,7 @@ Also ensures that the drag blades don't extend past their limits.
 Author: Ben
 */
 /**************************************************************************/
-void DragBladesClass::motorDo(bool direction, uint8_t speed) {
+void DragInducers::motorDo(bool direction, uint8_t speed) {
 	bool limit_in, limit_out;
 	int range;
 	if (direction) {
@@ -63,13 +66,13 @@ void DragBladesClass::motorDo(bool direction, uint8_t speed) {
 	}
 	limit_in = digitalRead(LIM_IN);
 	limit_out = digitalRead(LIM_OUT);
-	DataLog.supStat.encPos = encPos;
-	DataLog.supStat.encPosCmd = encPosCmd;
-	DataLog.supStat.limit_in = limit_in;
-	DataLog.supStat.limit_out = limit_out;
-	DataLog.supStat.encMax = encMax;
-	DataLog.supStat.encMin = encMin;
-	DataLog.supStat.mtrSpdCmd = mtrSpdCmd;
+	log.supStat.encPos = encPos;
+	log.supStat.encPosCmd = encPosCmd;
+	log.supStat.limit_in = limit_in;
+	log.supStat.limit_out = limit_out;
+	log.supStat.encMax = encMax;
+	log.supStat.encMin = encMin;
+	log.supStat.mtrSpdCmd = mtrSpdCmd;
 	if (!limit_in && (direction == INWARD)) {
 		analogWrite(MOTOR_PWM, 0);
 		range = myAbs(encMax - encMin);
@@ -90,11 +93,11 @@ void DragBladesClass::motorDo(bool direction, uint8_t speed) {
 	if ((encMax - encMin) < 9 * ENC_RANGE / 10) {
 		encMin = 0;
 		encMax = ENC_RANGE;
-		DataLog.logError(ENC_RANGE_ERROR);
+		log.logError(ENC_RANGE_ERROR);
 	}
 }
 
-void DragBladesClass::motorDont() {
+void DragInducers::motorDont() {
 	digitalWrite(MOTOR_A, LOW);
 	digitalWrite(MOTOR_B, LOW);
 	analogWrite(MOTOR_PWM, 0);
@@ -109,18 +112,18 @@ their target for at least SETPOINT_INAROW succesive calls of motorGoTo()
 Author: Ben
 */
 /**************************************************************************/
-bool DragBladesClass::motorGoTo(int16_t goTo)
+bool DragInducers::motorGoTo(int16_t goTo)
 {
 	static uint8_t count = 0;
 	encPosCmd = goTo;
 	motorPID.Compute();
 	if (mtrSpdCmd >= 0) {
-		DragBlades.motorDo(OUTWARD, mtrSpdCmd);
+		drag_inducers.motorDo(OUTWARD, mtrSpdCmd);
 	}
 	else if (mtrSpdCmd < 0) {
-		DragBlades.motorDo(INWARD, -1 * mtrSpdCmd);
+		drag_inducers.motorDo(INWARD, -1 * mtrSpdCmd);
 	}
-	if ((myAbs(DragBlades.encPos - encPosCmd) <= SETPOINT_TOLERANCE)) {
+	if ((myAbs(drag_inducers.encPos - encPosCmd) <= SETPOINT_TOLERANCE)) {
 		count++;
 	}
 	else {
@@ -150,12 +153,12 @@ Then exercise motorGoTo by extending and retracting the blades in 1/4 turns
 Author: Ben
 */
 /**************************************************************************/
-void DragBladesClass::motorTest()
+void DragInducers::motorTest()
 {
 	int timer = 0;
-	DataLog.sd.remove(MOTOR_FILENAME);                                 //Removes prior error file
+	log.sd.remove(MOTOR_FILENAME);                                 //Removes prior error file
 
-	File data = DataLog.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
+	File data = log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
 	if (!data) {                                                    //If unable to be initiated, throw error statement.  Do nothing
 		Serial.println("Data file unable to initiated - motorTest");
 		SD_GO = false;
@@ -230,7 +233,7 @@ to spin past its physical limits and the motor will stall.
 Author: Ben
 */
 /**************************************************************************/
-void DragBladesClass::motorExercise()
+void DragInducers::motorExercise()
 {
 	int deadZoneSpeed = 63;
 	unsigned long t = 0;
@@ -238,14 +241,14 @@ void DragBladesClass::motorExercise()
 	bool dir = OUTWARD;
 	float derp;
 	uint8_t spd = 0;
-	DataLog.sd.remove("motorExercise.dat");
-	File myFile = DataLog.sd.open("motorExercise.dat", FILE_WRITE);
+	log.sd.remove("motorExercise.dat");
+	File myFile = log.sd.open("motorExercise.dat", FILE_WRITE);
 	myFile.println("times,spd,dir");
 	myFile.close();
 
 	t0 = micros();
 	while (t<8000000) {
-		myFile = DataLog.sd.open("motorExercise.dat", FILE_WRITE);
+		myFile = log.sd.open("motorExercise.dat", FILE_WRITE);
 		t = micros() - t0;
 		if (t < 1000000) {
 			dir = OUTWARD;
@@ -284,8 +287,8 @@ void DragBladesClass::motorExercise()
 		//Serial.print(t);
 		//Serial.print(",\t");
 		//Serial.println(spd);
-		DragBlades.motorDo(dir, spd);
-		myFile.printf("%lu,%u,%d,%d", t, spd, dir, DragBlades.encPos);
+		drag_inducers.motorDo(dir, spd);
+		myFile.printf("%lu,%u,%d,%d", t, spd, dir, drag_inducers.encPos);
 		myFile.println("");
 		myFile.close();
 	}
@@ -297,7 +300,7 @@ void DragBladesClass::motorExercise()
 Author: Ben
 */
 /**************************************************************************/
-void DragBladesClass::powerTest() {
+void DragInducers::powerTest() {
 	while (!(Serial.available() > 0)) {
 		while (!motorGoTo(encMin)) {
 			delay(MOTORTEST_DELAY_MS);
@@ -343,34 +346,19 @@ void DragBladesClass::powerTest() {
 
 /**************************************************************************/
 /*!
-@brief  For whatever reason the abs function wasn't working for me so I made one
-Author: Ben
-*/
-/**************************************************************************/
-int DragBladesClass::myAbs(int x) {
-	if (x >= 0) {
-		return x;
-	}
-	else {
-		return -x;
-	}
-}
-
-/**************************************************************************/
-/*!
 @brief  A function that will not return until the motor reaches its destination
 Also takes an argument as a percent and not as an encoder position.
 Also records data on the sd card.
 Author: Ben
 */
 /**************************************************************************/
-void DragBladesClass::motorGoToPersistent(uint16_t goToPercent)
+void DragInducers::motorGoToPersistent(uint16_t goToPercent)
 {
-	File data = DataLog.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
+	File data = log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
 	while (!motorGoTo(map(goToPercent, 0, 100, encMin, encMax))) {
 		data.open(MOTOR_FILENAME, FILE_WRITE);
 		if (data) {
-			data.printf("%lu,%d,%d,%d,%d,%d,%d,%d", millis(), encPos, encPosCmd, DataLog.supStat.limit_out, DataLog.supStat.limit_in, DataLog.supStat.encMax, DataLog.supStat.encMin, DataLog.supStat.mtrSpdCmd);
+			data.printf("%lu,%d,%d,%d,%d,%d,%d,%d", millis(), encPos, encPosCmd, log.supStat.limit_out, log.supStat.limit_in, log.supStat.encMax, log.supStat.encMin, log.supStat.mtrSpdCmd);
 			data.println("");
 			data.close();
 		}
@@ -379,4 +367,4 @@ void DragBladesClass::motorGoToPersistent(uint16_t goToPercent)
 }
 
 
-DragBladesClass DragBlades;
+DragInducers drag_inducers;

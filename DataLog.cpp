@@ -1,11 +1,12 @@
-// 
-// 
-// 
+#include "rcr_classes.hh"
 
-//#include "DataLog.h"
-#include "RCRClasses.h"
+#if (ARDUINO >= 100)
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
-void DataLogClass::init()
+void FlightLog::init()
 {
 	Serial.println("\r\n-------DatLog.init-------");
 	Serial.println("Initializing SD card");
@@ -31,7 +32,7 @@ void DataLogClass::init()
 	}
 }
 
-void DataLogClass::printTestFileNames() {
+void FlightLog::printTestFileNames() {
 	FatFile dir;
 	char name[32];
 	//dir.open(sd.vwd(), "/tests/", O_READ);
@@ -42,26 +43,7 @@ void DataLogClass::printTestFileNames() {
 	Serial.println(name);
 }
 
-/**************************************************************************/
-/*!
-@brief  Stores all data to the SD card
-Author: Ben
-*/
-/**************************************************************************/
-void DataLogClass::logData(bool testMode) {
-	File myFile = sd.open(LOG_FILENAME, FILE_WRITE);
-	if (myFile) {
-		myFile.printf("%lu,%.3f,%.3f,%.3f,%.3f,%.6f,", supStat.time, supStat.alt, supStat.vel, supStat.accel, supStat.leftVel, supStat.rightVel);
-		if (!testMode) {
-			myFile.printf("%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,", supStat.rollAxisGrav, supStat.yawAxisGrav, supStat.pitchAxisGrav, supStat.rollAxisLin, supStat.yawAxisLin, supStat.pitchAxisLin);
-			myFile.printf("%.4f,%.4f,%.4f,%.3f,%.3f,%.3f,", supStat.rollAxisGyro, supStat.yawAxisGyro, supStat.pitchAxisGyro, supStat.roll, supStat.yaw, supStat.pitch);
-		}
-		//myFile.printf("%.3f,%.3f,%.3f,", supStat.alt_k, supStat.vel_k, supStat.accel_k); //log kalman filter
-		myFile.printf("%.3f,%d,%d,%d,%d,%d,%d,%d", supStat.vSPP, supStat.encPos, supStat.encPosCmd, supStat.limit_out, supStat.limit_in, supStat.encMax, supStat.encMin, supStat.mtrSpdCmd);
-		myFile.println("");
-		myFile.close();
-	}
-}
+
 
 /**************************************************************************/
 /*!
@@ -69,7 +51,7 @@ void DataLogClass::logData(bool testMode) {
 Author: Ben
 */
 /**************************************************************************/
-bool DataLogClass::readCSV(struct stateStruct* destination) {
+bool FlightLog::readCSV(struct stateStruct* destination) {
 	File myFile = sd.open(TEST_FILENAME, FILE_READ);
 	float time, alt, accel;
 	bool returnVal;
@@ -119,7 +101,7 @@ bool DataLogClass::readCSV(struct stateStruct* destination) {
 Author: Jacob
 */
 /**************************************************************************/
-void DataLogClass::logError(String error) {
+void FlightLog::logError(String error) {
 	File myFile = sd.open(ERROR_FILENAME, FILE_WRITE);
 	float time = (float)millis() / (float)1000;
 
@@ -141,7 +123,7 @@ void DataLogClass::logError(String error) {
   Author: Jacob
   */
   /**************************************************************************/
-void DataLogClass::newFlight(bool testMode) {
+void FlightLog::newFlight(bool testMode) {
 	sd.remove(LOG_FILENAME);                             //Removes prior flight data file
 	sd.remove(ERROR_FILENAME);                                 //Removes prior error file
 
@@ -173,5 +155,5 @@ void DataLogClass::newFlight(bool testMode) {
 	//initializePastStates();
 } // END newFlight()
 
-DataLogClass DataLog;
+FlightLog log;
 

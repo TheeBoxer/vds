@@ -1,15 +1,16 @@
 
 #include "Adafruit_BMP280.h"
 #include <math.h>
-#include "GlobVars.h"                                      //All the VDS settings and constants are here
-#include "MatrixMath.h"
+#include "globals.hh"                                      //All the VDS settings and constants are here
+#include "matrix.hh"
 #include <SdFat.h>
 #include <SPI.h>
-#include "RCRClasses.h"
+#include "rcr_classes.hh"
+#include "drag_inducers.hh"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <Wire.h>
-#include "RCRPID.h"
+#include "pid.hh"
 
 /********************BEGIN GLOBAL VARIABLES********************/
 /*General Variables*/
@@ -63,13 +64,13 @@ void setup(void) {
 	GUI.printTitle();
 
 	//Initialize BNO055, pressure sensor, rocket settings, and microSD card
-	DataLog.init();
+	log.init();
 	GUI.init();
-	DAQ.init(true);
+	daq_controller.init(true);
 
-	DragBlades.init();
+	drag_inducers.init();
 	attachInterrupt(digitalPinToInterrupt(ENC_A), doEncoder, RISING);
-	DragBlades.dragBladesCheck();
+	drag_inducers.dragBladesCheck();
 	GUI.printMenu();
 }  // END setup()
 /********************END SETUP FUNCTION********************/
@@ -91,31 +92,31 @@ void loop(void) {
 	if (Serial.available() > 0) {
 		switch (Serial.read()) {
 		case 'S':
-			DataLog.init();
-			DAQ.init(false);
+			log.init();
+			daq_controller.init(false);
 			GUI.init();
-			DragBlades.dragBladesCheck();
+			drag_inducers.dragBladesCheck();
 			break;
 		case 'D':
-			DragBlades.dragBladesCheck();
+			drag_inducers.dragBladesCheck();
 			break;
 		case 'P':
 			Serial.println("Power test");
 			GUI.eatYourBreakfast();
-			DragBlades.powerTest();
-			DragBlades.motorDont();
+			drag_inducers.powerTest();
+			drag_inducers.motorDont();
 			break;
 		case 'I':
 			Serial.println("Inching Inward");
-			DragBlades.motorDo(INWARD, DEADZONE_MAX + 15);
+			drag_inducers.motorDo(INWARD, DEADZONE_MAX + 15);
 			delay(250);
-			DragBlades.motorDont();
+			drag_inducers.motorDont();
 			break;
 		case 'O':
 			Serial.println("Inching Outward");
-			DragBlades.motorDo(OUTWARD, DEADZONE_MAX + 15);
+			drag_inducers.motorDo(OUTWARD, DEADZONE_MAX + 15);
 			delay(250);
-			DragBlades.motorDont();
+			drag_inducers.motorDont();
 			break;
 		case 'R':
 			GUI.eatYourBreakfast();
@@ -124,22 +125,22 @@ void loop(void) {
 		case 'C':
 			Serial.println("\n\n----- Calibrate BNO055 -----;");
 			GUI.eatYourBreakfast();                                       //Flushes serial port
-			DAQ.calibrateBNO();
+			daq_controller.calibrateBNO();
 			break;
 		case 'A':
 			Serial.println("\n\n----- Testing Accelerometer -----;");
 			GUI.eatYourBreakfast();                                       //Flushes serial port
-			DAQ.testAccelerometer();
+			daq_controller.testAccelerometer();
 			break;
 		case 'M':
 			GUI.eatYourBreakfast();                                       //Flushes serial port
 			Serial.println("\n\n----- Calibrate Motor -----;");
-			DragBlades.motorTest();
+			drag_inducers.motorTest();
 			break;
 		case 'B':
 			Serial.println("\n\n----- Testing Barometric Pressure Sensor -----;");
 			GUI.eatYourBreakfast();                                       //Flushes serial port
-			DAQ.testBMP();
+			daq_controller.testBMP();
 			break;
 		case 'F':
 			GUI.eatYourBreakfast();                                       //Flushes serial port
@@ -151,11 +152,11 @@ void loop(void) {
 			}
 			Serial.readBytes(&response, 1);
 			if (response == 'y') {
-				DataLog.newFlight(true);
+				log.newFlight(true);
 				testMode = true;
 			}
 			else if (response == 'n') {
-				DataLog.newFlight(false);
+				log.newFlight(false);
 				testMode = false;
 			}
 			else {
@@ -182,14 +183,14 @@ void loop(void) {
 
 			if (((!BMP_GO || !BNO_GO || !DragBlades_GO) && !testMode) || !SD_GO) {       //If sensors are not initialized, send error, do nothing
 				Serial.println("Cannot enter flight mode. A sensor or sd card is not initialized.");
-				DataLog.logError(SENSOR_UNIT);
+				log.logError(SENSOR_UNIT);
 			}
 			else {
 				Serial.println("Entering Flight Mode;");                //If sensors are initialized, begin flight mode
 
 				if (!testMode) {                                          //If not in test mode, zero the pad altitude
 					Serial.println("Test Mode: OFF");
-					DAQ.setPadAlt();
+					daq_controller.setPadAlt();
 				}
 				else {
 					Serial.println("Test Mode: ON");
@@ -207,7 +208,7 @@ void loop(void) {
 		default:
 			Serial.println("Unkown code received - main menu");
 			Serial.println(response);
-			DataLog.logError(INVALID_MENU);
+			log.logError(INVALID_MENU);
 			break;
 		}
 		GUI.eatYourBreakfast();
@@ -232,35 +233,35 @@ void flightMode(bool testMode, bool fullBrakesTest) {
 	float vSPP_val = 0;
 	Serial.println("asdfasdf");
 	GUI.eatYourBreakfast();
-	while ((Serial.available() == 0) && DAQ.getRawState(&rawState, testMode)) {
+	while ((Serial.available() == 0) && daq_controller.getRawState(&rawState, testMode)) {
 		vSPP_val = vSPP(rawState.alt, rawState.vel);
-		airBrakesEncPos_val = DragBlades.airBrakesGoToEncPos(rawState.vel, vSPP_val);
+		airBrakesEncPos_val = drag_inducers.airBrakesGoToEncPos(rawState.vel, vSPP_val);
 		if (!fullBrakesTest) {
-			DragBlades.motorGoTo(airBrakesEncPos_val);
+			drag_inducers.motorGoTo(airBrakesEncPos_val);
 		}
 		else {
 			if ((rawState.accel < 0) && (rawState.alt > 150) && (rawState.vel > 0)) {
-				DragBlades.motorGoTo(DragBlades.encMax);
+				drag_inducers.motorGoTo(drag_inducers.encMax);
 			}
 			else {
-				DragBlades.motorGoTo(DragBlades.encMin);
+				drag_inducers.motorGoTo(drag_inducers.encMin);
 			}
 		}
 		//kalman(0, rawState, &filteredState);                   //feeds raw state into kalman filter and retrieves new filtered state.
 
 		//LOG DATA
-		DAQ.getAdditionalData(rawState, filteredState, testMode);
-		DataLog.supStat.vSPP = vSPP_val;
-		DataLog.logData(testMode);
+		daq_controller.getAdditionalData(rawState, filteredState, testMode);
+		log.supStat.vSPP = vSPP_val;
+		log.logData(testMode);
 		if (!fullBrakesTest) {  //call motorGoTo again to make sure the blades didn't pass their setpoint 
-			DragBlades.motorGoTo(airBrakesEncPos_val);
+			drag_inducers.motorGoTo(airBrakesEncPos_val);
 		}
 		else {
 			if ((rawState.accel < 0) && (rawState.alt > 150) && (rawState.vel > 0)) {
-				DragBlades.motorGoTo(DragBlades.encMax);
+				drag_inducers.motorGoTo(drag_inducers.encMax);
 			}
 			else {
-				DragBlades.motorGoTo(DragBlades.encMin);
+				drag_inducers.motorGoTo(drag_inducers.encMin);
 			}
 		}					
 
@@ -276,9 +277,9 @@ void flightMode(bool testMode, bool fullBrakesTest) {
 	GUI.eatYourBreakfast();
 	while (digitalRead(LIM_IN) && (Serial.available() == 0)) {
 		delay(MOTORTEST_DELAY_MS);
-		DragBlades.motorDo(INWARD, DEADZONE_MAX + 10);
+		drag_inducers.motorDo(INWARD, DEADZONE_MAX + 10);
 	}
-	DragBlades.motorDont();
+	drag_inducers.motorDont();
 } // END flightMode()
 
 
@@ -432,7 +433,7 @@ void kalman(int16_t encPos, struct stateStruct rawState, struct stateStruct* fil
 #if DEBUG_KALMAN
 		Serial.println("u_k is nan!");
 #endif
-		DataLog.logError(NAN_UK);
+		log.logError(NAN_UK);
 		u_k = 0;
 	}
 
@@ -514,10 +515,10 @@ void doEncoder(void) {
 	/* If pinA and pinB are both high or both low, it is spinning
 	forward. If they're different, it's going backward.*/
 	if (digitalRead(ENC_A) == digitalRead(ENC_B)) {
-		DragBlades.encPos--;
+		drag_inducers.encPos--;
 	}
 	else {
-		DragBlades.encPos++;
+		drag_inducers.encPos++;
 	}
 }
 

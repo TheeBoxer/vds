@@ -15,7 +15,7 @@
 #else
 #include <Wire.h>
 #endif
-#include "constants.h"
+#include "globals.hh"
 
 /*=========================================================================
 I2C ADDRESS/BITS

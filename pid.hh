@@ -1,5 +1,5 @@
-#pragma once
-#include "GlobVars.h"
+#ifndef _RCR_PID_HH_
+#define _RCR_PID_HH_
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "arduino.h"
@@ -7,12 +7,14 @@
 #include "WProgram.h"
 #endif
 
-class RCRPID
-{
-public:
-	RCRPID(volatile int*, int*, int*, float, float, float, float, int, int);//constructor
+#include "globals.hh"
+
+class Pid {
+ public:
+	Pid(volatile int*, int*, int*, float, float, float, float, int, int);
 	void Compute();
-private:
+
+ private:
 	float kp;                  // * (P)roportional Tuning Parameter
 	float ki;                  // * (I)ntegral Tuning Parameter
 	float kd;                  // * (D)erivative Tuning Parameter
@@ -25,6 +27,6 @@ private:
 	float ITerm, lastError, lastDTerm=0;
 	unsigned long lastTime;
 	int outMin, outMax;
-
 };
 
+#endif // _RCR_PID_HH_

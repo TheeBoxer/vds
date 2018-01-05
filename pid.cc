@@ -1,8 +1,8 @@
-#include "RCRPID.h"
+#include "pid.hh"
 
 
 
-RCRPID::RCRPID(volatile int* input, int* output, int* setpoint, float Kp, float Ki, float Kd, float N, int lower, int upper)
+Pid::Pid(volatile int* input, int* output, int* setpoint, float Kp, float Ki, float Kd, float N, int lower, int upper)
 {
 	myOutput = output;
 	myInput = input;
@@ -18,7 +18,7 @@ RCRPID::RCRPID(volatile int* input, int* output, int* setpoint, float Kp, float 
 }
 
 
-void RCRPID::Compute() {
+void Pid::Compute() {
 	//error variables
 	int input, error;
 	float output, dError, dt, DTerm=0;
