@@ -10,7 +10,7 @@
 class DragInducers {
  public:
   DragInducers() : motorPID(&encPos, &mtrSpdCmd, &encPosCmd, KP, KI, KD, KN, -255, 255) {}
-  void init(void);
+  void init();
   void dragBladesCheck();
   void powerTest();
   int airBrakesGoToEncPos(float vehVel, float sppVel);

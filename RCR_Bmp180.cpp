@@ -106,7 +106,7 @@ static void readS16(byte reg, int16_t *value)
 @brief  Reads the factory-set coefficients
 */
 /**************************************************************************/
-static void readCoefficients(void)
+static void readCoefficients()
 {
 #if BMP085_USE_DATASHEET_VALS
 	_bmp085_coeffs.ac1 = 408;

@@ -66,13 +66,13 @@ void DragInducers::motorDo(bool direction, uint8_t speed) {
 	}
 	limit_in = digitalRead(LIM_IN);
 	limit_out = digitalRead(LIM_OUT);
-	log.supStat.encPos = encPos;
-	log.supStat.encPosCmd = encPosCmd;
-	log.supStat.limit_in = limit_in;
-	log.supStat.limit_out = limit_out;
-	log.supStat.encMax = encMax;
-	log.supStat.encMin = encMin;
-	log.supStat.mtrSpdCmd = mtrSpdCmd;
+	flight_log.supStat.encPos = encPos;
+	flight_log.supStat.encPosCmd = encPosCmd;
+	flight_log.supStat.limit_in = limit_in;
+	flight_log.supStat.limit_out = limit_out;
+	flight_log.supStat.encMax = encMax;
+	flight_log.supStat.encMin = encMin;
+	flight_log.supStat.mtrSpdCmd = mtrSpdCmd;
 	if (!limit_in && (direction == INWARD)) {
 		analogWrite(MOTOR_PWM, 0);
 		range = myAbs(encMax - encMin);
@@ -93,7 +93,7 @@ void DragInducers::motorDo(bool direction, uint8_t speed) {
 	if ((encMax - encMin) < 9 * ENC_RANGE / 10) {
 		encMin = 0;
 		encMax = ENC_RANGE;
-		log.logError(ENC_RANGE_ERROR);
+		flight_log.logError(ENC_RANGE_ERROR);
 	}
 }
 
@@ -156,12 +156,12 @@ Author: Ben
 void DragInducers::motorTest()
 {
 	int timer = 0;
-	log.sd.remove(MOTOR_FILENAME);                                 //Removes prior error file
+	flight_log.sd.remove(MOTOR_FILENAME);                                 //Removes prior error file
 
-	File data = log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
+	File data = flight_log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
 	if (!data) {                                                    //If unable to be initiated, throw error statement.  Do nothing
 		Serial.println("Data file unable to initiated - motorTest");
-		SD_GO = false;
+		disk_initialized = false;
 		return;
 	}
 	else {                                             //Adds unique header depending on if VDS is in test or flight mode
@@ -184,7 +184,7 @@ void DragInducers::motorTest()
 			return;
 		}
 	}	
-	DragBlades_GO = true;
+	drag_inducers_initialized = true;
 
 	motorGoToPersistent(0);
 	motorDont();
@@ -241,14 +241,14 @@ void DragInducers::motorExercise()
 	bool dir = OUTWARD;
 	float derp;
 	uint8_t spd = 0;
-	log.sd.remove("motorExercise.dat");
-	File myFile = log.sd.open("motorExercise.dat", FILE_WRITE);
+	flight_log.sd.remove("motorExercise.dat");
+	File myFile = flight_log.sd.open("motorExercise.dat", FILE_WRITE);
 	myFile.println("times,spd,dir");
 	myFile.close();
 
 	t0 = micros();
 	while (t<8000000) {
-		myFile = log.sd.open("motorExercise.dat", FILE_WRITE);
+		myFile = flight_log.sd.open("motorExercise.dat", FILE_WRITE);
 		t = micros() - t0;
 		if (t < 1000000) {
 			dir = OUTWARD;
@@ -309,7 +309,7 @@ void DragInducers::powerTest() {
 			delay(MOTORTEST_DELAY_MS);
 		}
 	}
-	GUI.eatYourBreakfast();
+	gui.eatYourBreakfast();
 	while (!(Serial.available() > 0)) {
 		while ( !motorGoTo(encMin)) {
 			delay(MOTORTEST_DELAY_MS);
@@ -354,11 +354,11 @@ Author: Ben
 /**************************************************************************/
 void DragInducers::motorGoToPersistent(uint16_t goToPercent)
 {
-	File data = log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
+	File data = flight_log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
 	while (!motorGoTo(map(goToPercent, 0, 100, encMin, encMax))) {
 		data.open(MOTOR_FILENAME, FILE_WRITE);
 		if (data) {
-			data.printf("%lu,%d,%d,%d,%d,%d,%d,%d", millis(), encPos, encPosCmd, log.supStat.limit_out, log.supStat.limit_in, log.supStat.encMax, log.supStat.encMin, log.supStat.mtrSpdCmd);
+			data.printf("%lu,%d,%d,%d,%d,%d,%d,%d", millis(), encPos, encPosCmd, flight_log.supStat.limit_out, flight_log.supStat.limit_in, flight_log.supStat.encMax, flight_log.supStat.encMin, flight_log.supStat.mtrSpdCmd);
 			data.println("");
 			data.close();
 		}

@@ -1,16 +1,16 @@
-
 #include "Adafruit_BMP280.h"
-#include <math.h>
 #include "globals.hh"                                      //All the VDS settings and constants are here
 #include "matrix.hh"
+#include "flight_log.hh"
+#include "daq.hh"
+#include "drag_inducers.hh"
+#include "pid.hh"
+
 #include <SdFat.h>
 #include <SPI.h>
-#include "rcr_classes.hh"
-#include "drag_inducers.hh"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <Wire.h>
-#include "pid.hh"
 
 /********************BEGIN GLOBAL VARIABLES********************/
 /*General Variables*/
@@ -38,7 +38,7 @@ ____) |  __/ |_| |_| | |_) |
 |_____/ \___|\__|\__,_| .__/
 					  | |
 					  |_|*/
-void setup(void) {
+void setup() {
 	bool begin = false;
 	//turn on an LED to ensure the Teensy is getting power
 	pinMode(LED, OUTPUT);
@@ -55,23 +55,22 @@ void setup(void) {
 		if (Serial.available() > 0) {
 			if (Serial.read() == 's') {
 				begin = true;
-				GUI.eatYourBreakfast();
+				gui.flush_input();
 			}
 		}
 	}
 
-	//print out the title
-	GUI.printTitle();
+	gui.printTitle();
 
-	//Initialize BNO055, pressure sensor, rocket settings, and microSD card
-	log.init();
-	GUI.init();
+	//Initialize BNO055, pressure sensor, vehicle settings, and microSD card
+	flight_log.init();
+	gui.init();
 	daq_controller.init(true);
 
 	drag_inducers.init();
 	attachInterrupt(digitalPinToInterrupt(ENC_A), doEncoder, RISING);
 	drag_inducers.dragBladesCheck();
-	GUI.printMenu();
+	gui.printMenu();
 }  // END setup()
 /********************END SETUP FUNCTION********************/
 
@@ -84,17 +83,17 @@ void setup(void) {
 |_|  |_|\__,_|_|_| |_| |______\___/ \___/| .__/
 										 | |
 										 |_| */
-										 /*To add a menu item, add a case statement below and add a print statement in GUI.printMenu*/
-void loop(void) {
+										 /*To add a menu item, add a case statement below and add a print statement in gui.printMenu*/
+void loop() {
 	char response;
 	bool testMode = false;
 	bool fullBrakesTest = false;
 	if (Serial.available() > 0) {
 		switch (Serial.read()) {
 		case 'S':
-			log.init();
+			flight_log.init();
 			daq_controller.init(false);
-			GUI.init();
+			gui.init();
 			drag_inducers.dragBladesCheck();
 			break;
 		case 'D':
@@ -102,7 +101,7 @@ void loop(void) {
 			break;
 		case 'P':
 			Serial.println("Power test");
-			GUI.eatYourBreakfast();
+			gui.flush_input();
 			drag_inducers.powerTest();
 			drag_inducers.motorDont();
 			break;
@@ -119,44 +118,44 @@ void loop(void) {
 			drag_inducers.motorDont();
 			break;
 		case 'R':
-			GUI.eatYourBreakfast();
-			GUI.rocketMenu();
+			gui.flush_input();
+			gui.rocketMenu();
 			break;
 		case 'C':
 			Serial.println("\n\n----- Calibrate BNO055 -----;");
-			GUI.eatYourBreakfast();                                       //Flushes serial port
+			gui.flush_input();                                       //Flushes serial port
 			daq_controller.calibrateBNO();
 			break;
 		case 'A':
 			Serial.println("\n\n----- Testing Accelerometer -----;");
-			GUI.eatYourBreakfast();                                       //Flushes serial port
+			gui.flush_input();                                       //Flushes serial port
 			daq_controller.testAccelerometer();
 			break;
 		case 'M':
-			GUI.eatYourBreakfast();                                       //Flushes serial port
+			gui.flush_input();                                       //Flushes serial port
 			Serial.println("\n\n----- Calibrate Motor -----;");
 			drag_inducers.motorTest();
 			break;
 		case 'B':
 			Serial.println("\n\n----- Testing Barometric Pressure Sensor -----;");
-			GUI.eatYourBreakfast();                                       //Flushes serial port
+			gui.flush_input();                                       //Flushes serial port
 			daq_controller.testBMP();
 			break;
 		case 'F':
-			GUI.eatYourBreakfast();                                       //Flushes serial port
+			gui.flush_input();                                       //Flushes serial port
 			Serial.println("------Choose Flight Mode Settings-----");
 			Serial.println("Would you like to enter test mode? (y/n)");
-			GUI.eatYourBreakfast();
+			gui.flush_input();
 			while (!(Serial.available() > 0)) {
 				//wait
 			}
 			Serial.readBytes(&response, 1);
 			if (response == 'y') {
-				log.newFlight(true);
+				flight_log.newFlight(true);
 				testMode = true;
 			}
 			else if (response == 'n') {
-				log.newFlight(false);
+				flight_log.newFlight(false);
 				testMode = false;
 			}
 			else {
@@ -164,7 +163,7 @@ void loop(void) {
 				return;
 			}
 			Serial.println("Would you like to enter full-brake test mode? (y/n)");
-			GUI.eatYourBreakfast();
+			gui.flush_input();
 			while (!(Serial.available() > 0)) {
 				//wait
 			}
@@ -181,9 +180,9 @@ void loop(void) {
 			}
 
 
-			if (((!BMP_GO || !BNO_GO || !DragBlades_GO) && !testMode) || !SD_GO) {       //If sensors are not initialized, send error, do nothing
+			if (((!bmp_initialized || !bno_initialized || !drag_inducers_initialized) && !testMode) || !disk_initialized) {       //If sensors are not initialized, send error, do nothing
 				Serial.println("Cannot enter flight mode. A sensor or sd card is not initialized.");
-				log.logError(SENSOR_UNIT);
+				flight_log.logError(SENSOR_UNIT);
 			}
 			else {
 				Serial.println("Entering Flight Mode;");                //If sensors are initialized, begin flight mode
@@ -208,11 +207,11 @@ void loop(void) {
 		default:
 			Serial.println("Unkown code received - main menu");
 			Serial.println(response);
-			log.logError(INVALID_MENU);
+			flight_log.logError(INVALID_MENU);
 			break;
 		}
-		GUI.eatYourBreakfast();
-		GUI.printMenu();
+		gui.flush_input();
+		gui.printMenu();
 	}
 } // END loop()
 /*********************END LOOP FUNCTION*********************/
@@ -228,11 +227,11 @@ Author: Jacob & Ben
 */
 /**************************************************************************/
 void flightMode(bool testMode, bool fullBrakesTest) {
-	struct stateStruct rawState, filteredState;
+	VehicleState rawState, filteredState;
 	int airBrakesEncPos_val = 0;
 	float vSPP_val = 0;
 	Serial.println("asdfasdf");
-	GUI.eatYourBreakfast();
+	gui.flush_input();
 	while ((Serial.available() == 0) && daq_controller.getRawState(&rawState, testMode)) {
 		vSPP_val = vSPP(rawState.alt, rawState.vel);
 		airBrakesEncPos_val = drag_inducers.airBrakesGoToEncPos(rawState.vel, vSPP_val);
@@ -251,8 +250,8 @@ void flightMode(bool testMode, bool fullBrakesTest) {
 
 		//LOG DATA
 		daq_controller.getAdditionalData(rawState, filteredState, testMode);
-		log.supStat.vSPP = vSPP_val;
-		log.logData(testMode);
+		flight_log.supStat.vSPP = vSPP_val;
+		flight_log.logData(testMode);
 		if (!fullBrakesTest) {  //call motorGoTo again to make sure the blades didn't pass their setpoint 
 			drag_inducers.motorGoTo(airBrakesEncPos_val);
 		}
@@ -274,7 +273,7 @@ void flightMode(bool testMode, bool fullBrakesTest) {
 #endif
 	}
 	Serial.println("End of flight mode. Returning drag blades...");
-	GUI.eatYourBreakfast();
+	gui.flush_input();
 	while (digitalRead(LIM_IN) && (Serial.available() == 0)) {
 		delay(MOTORTEST_DELAY_MS);
 		drag_inducers.motorDo(INWARD, DEADZONE_MAX + 10);
@@ -292,17 +291,17 @@ void flightMode(bool testMode, bool fullBrakesTest) {
   /**************************************************************************/
 float vSPP(float alt, float vel) {
 	float returnVal, x;
-	x = 1 - exp(-2 * rocket.Cmin *(rocket.targetAlt - alt));
+	x = 1 - exp(-2 * vehicle.Cmin *(vehicle.targetAlt - alt));
 	if (x < 0) {
 		x = 0;
 	}
 
-	if (vel < rocket.interVel) {
-		returnVal = velocity_h(rocket.Cmin, alt, 0, rocket.targetAlt);
+	if (vel < vehicle.interVel) {
+		returnVal = velocity_h(vehicle.Cmin, alt, 0, vehicle.targetAlt);
 	}
-	else if (vel >= rocket.interVel) {
-		if (alt < rocket.targetAlt) {
-			returnVal = velocity_h(rocket.Cspp, alt, rocket.interVel, rocket.interAlt);
+	else if (vel >= vehicle.interVel) {
+		if (alt < vehicle.targetAlt) {
+			returnVal = velocity_h(vehicle.Cspp, alt, vehicle.interVel, vehicle.interAlt);
 		}
 		else {
 			returnVal = 0;
@@ -357,7 +356,7 @@ _  __     _                         ______                _   _
 Author: Ben, Denny, and Lydia
 */
 /**************************************************************************/
-void kalman(int16_t encPos, struct stateStruct rawState, struct stateStruct* filteredState) {
+void kalman(int16_t encPos, VehicleState rawState, VehicleState* filteredState) {
 	static float x_k[3] = { 0, 0, 0 };
 	static unsigned long lastTime;
 	float delta_t;
@@ -414,15 +413,15 @@ void kalman(int16_t encPos, struct stateStruct rawState, struct stateStruct* fil
 #endif
 
   //calculate what Kalman thinks the acceleration is
-	c_d = rocket.Cd_r *(1 - encPos / ENC_RANGE) + encPos*rocket.Cd_b / ENC_RANGE;
-	area = rocket.Ar*(1 - encPos / ENC_RANGE) + encPos*rocket.Ab / ENC_RANGE;
+	c_d = vehicle.Cd_r *(1 - encPos / ENC_RANGE) + encPos*vehicle.Cd_b / ENC_RANGE;
+	area = vehicle.Ar*(1 - encPos / ENC_RANGE) + encPos*vehicle.Ab / ENC_RANGE;
 	q = RHO * rawState.vel * rawState.vel / 2;
-	u_k = -9.81 - c_d * area * q / rocket.dryMass;
+	u_k = -9.81 - c_d * area * q / vehicle.dryMass;
 
 	// if acceleration > 10m/s^2 the motor is probably burning and we should add that in to u_k
 	if (z_k[2] > 10) {
 		//Serial.println("Burn Phase!"); //errorlog
-		u_k += rocket.avgMotorThrust / (rocket.dryMass + rocket.propMass / 2);
+		u_k += vehicle.avgMotorThrust / (vehicle.dryMass + vehicle.propMass / 2);
 	}
 	else if ((z_k[0] < 20) && (z_k[0] > -20)) {
 		u_k = 0;
@@ -433,7 +432,7 @@ void kalman(int16_t encPos, struct stateStruct rawState, struct stateStruct* fil
 #if DEBUG_KALMAN
 		Serial.println("u_k is nan!");
 #endif
-		log.logError(NAN_UK);
+		flight_log.logError(NAN_UK);
 		u_k = 0;
 	}
 
@@ -511,7 +510,7 @@ void kalman(int16_t encPos, struct stateStruct rawState, struct stateStruct* fil
 	  Author: Ben
 	  */
 	  /**************************************************************************/
-void doEncoder(void) {
+void doEncoder() {
 	/* If pinA and pinB are both high or both low, it is spinning
 	forward. If they're different, it's going backward.*/
 	if (digitalRead(ENC_A) == digitalRead(ENC_B)) {

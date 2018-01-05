@@ -13,11 +13,11 @@
   Written by Kevin Townsend for Adafruit Industries.
   BSD license, all text above must be included in any redistribution
  ***************************************************************************/
+#include "Adafruit_BMP280.h"
+
 #include "Arduino.h"
 #include <Wire.h>
 #include <SPI.h>
-#include "Adafruit_BMP280.h"
-
 
 /***************************************************************************
  PRIVATE FUNCTIONS
@@ -237,7 +237,7 @@ uint32_t Adafruit_BMP280::read24(byte reg)
     @brief  Reads the factory-set coefficients
 */
 /**************************************************************************/
-void Adafruit_BMP280::readCoefficients(void)
+void Adafruit_BMP280::readCoefficients()
 {
     _bmp280_calib.dig_T1 = read16_LE(BMP280_REGISTER_DIG_T1);
     _bmp280_calib.dig_T2 = readS16_LE(BMP280_REGISTER_DIG_T2);
@@ -259,7 +259,7 @@ void Adafruit_BMP280::readCoefficients(void)
 
 */
 /**************************************************************************/
-float Adafruit_BMP280::readTemperature(void)
+float Adafruit_BMP280::readTemperature()
 {
   int32_t var1, var2;
 
@@ -284,7 +284,7 @@ float Adafruit_BMP280::readTemperature(void)
 
 */
 /**************************************************************************/
-float Adafruit_BMP280::readPressure(void) {
+float Adafruit_BMP280::readPressure() {
   int64_t var1, var2, p;
 
   // Must be done first to get the t_fine variable set up

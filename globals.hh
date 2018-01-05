@@ -1,8 +1,5 @@
-#include <WString.h>
-
-//debug settings.
-//Since print statements make things run slow and take up memory to store. choosing what to compile
-//can be a good way to make code more efficient
+#ifndef _RCR_VDS_GLOBALS_HH_
+#define _RCR_VDS_GLOBALS_HH_
 
 #define DEBUG_EMERGENCY			false				//toggles print statements that are super detailed
 #define DEBUG_FLIGHTMODE		false
@@ -17,8 +14,6 @@
 #define DEBUG_MOTORGOTO			false
 #define DEBUG_PIDCOMPUTE		false
 
-#define BMP280					true				//The code can operate with either BMP180 or BMP280
-//#define TEST_FILENAME			"12_18_16_test.dat"   //"8_6_16_test.dat"
 #define LOG_FILENAME			"VDSv2_1Data.dat"
 #define ERROR_FILENAME			"VDSv2_1Errors.dat"
 #define MOTOR_FILENAME			"VDSv2_1MotorTest.dat"
@@ -27,9 +22,9 @@
 #define LOG_HEADER_STRING_FLIGHT "times, alts, vels, leftVel, rightVel, accels, rollAxisGrav, yawAxisGrav, pitchAxisGrav, rollAxisLin, yawAxisLin, pitchAxisLin, rollAxisGyro, yawAxisGyro, pitchAxisGyro, roll, yaw, pitch, vSPP, encPos, encPosCmd, limit_out, limit_in, encMax, encMin"
 
 /*To add a variable to be logged on the sd
-1) add a new field to the log.supStat struct.
-2) add a new entry in the log.logData() function
-3) add a new 'name' for your variable in log.newFlight()*/
+1) add a new field to the flight_log.supStat struct.
+2) add a new entry in the flight_log.logData() function
+3) add a new 'name' for your variable in flight_log.newFlight()*/
 
 //miscallaneous constants
 #define TIME_DIVISOR		100000			//time divisor to convert ms to sec
@@ -41,7 +36,7 @@
 #define MAX_EXP_VEL			300
 #define MIN_EXP_VEL			-50
 
-//max nominal rocket values
+//max nominal vehicle values
 #define MAX_EXP_DRYMASS			30
 #define MAX_EXP_PROPMASS		10
 #define MAX_EXP_CD_R			1
@@ -100,12 +95,10 @@
 #define UNCALIBRATED_MAGN  ("10")
 #define ENC_RANGE_ERROR		("11")
 
-#ifndef _GLOBVARS_h
-#define _GLOBVARS_h
+#define ROCKETSTRUCT_STORSIZE (10*4) // bytes
 
-#define ROCKETSTRUCT_STORSIZE (10*4) //bytes
-struct rocketStruct {
-	String name;
+struct Rocket {
+	const char* const name;
 	float dryMass;
 	float propMass;
 	float Cd_r;
@@ -119,11 +112,15 @@ struct rocketStruct {
 	float Cmin;
 	float Cmax;
 	float Cspp;
-} ;
-extern rocketStruct rocket;
-extern bool BMP_GO;
-extern bool BNO_GO;
-extern bool SD_GO;
-extern bool DragBlades_GO;
+};
+
+extern Rocket vehicle;
+
+extern bool bmp_initialized;
+extern bool bno_initialized;
+extern bool disk_initialized;
+extern bool drag_inducers_initialized;
+
 extern String TEST_FILENAME;
-#endif
+
+#endif // _RCR_VDS_GLOBALS_HH_

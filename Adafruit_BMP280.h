@@ -128,13 +128,13 @@ class Adafruit_BMP280
     Adafruit_BMP280(int8_t cspin, int8_t mosipin, int8_t misopin, int8_t sckpin);
 
     bool  begin(uint8_t addr = BMP280_ADDRESS, uint8_t chipid = BMP280_CHIPID);
-    float readTemperature(void);
-    float readPressure(void);
+    float readTemperature();
+    float readPressure();
     float readAltitude(float seaLevelhPa = 1013.25);
 
   private:
 
-    void readCoefficients(void);
+    void readCoefficients();
     uint8_t spixfer(uint8_t x);
 
     void      write8(byte reg, byte value);

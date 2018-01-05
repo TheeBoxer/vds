@@ -1,4 +1,4 @@
-#include "rcr_classes.hh"
+#include "flight_log.hh"
 
 #if (ARDUINO >= 100)
 #include "Arduino.h"
@@ -11,12 +11,12 @@ void FlightLog::init()
 	Serial.println("\r\n-------DatLog.init-------");
 	Serial.println("Initializing SD card");
 	if (!sd.begin()) {                                            //Determine if microSD card is initialized and ready to be used.
-		SD_GO = false;
+		disk_initialized = false;
 		Serial.println("No SD card DETECTED!");
 		return;
 	}
 	else {
-		SD_GO = true;
+		disk_initialized = true;
 		Serial.println("SD card Initialized");                    //If microSD card id ready, begin initialization of flight.  Includes creation of dataFile and it's heading
 	}
 	File myFile = sd.open(TEST_FILENAME, FILE_READ);
@@ -51,7 +51,7 @@ void FlightLog::printTestFileNames() {
 Author: Ben
 */
 /**************************************************************************/
-bool FlightLog::readCSV(struct stateStruct* destination) {
+bool FlightLog::readCSV(VehicleState* destination) {
 	File myFile = sd.open(TEST_FILENAME, FILE_READ);
 	float time, alt, accel;
 	bool returnVal;
@@ -101,7 +101,7 @@ bool FlightLog::readCSV(struct stateStruct* destination) {
 Author: Jacob
 */
 /**************************************************************************/
-void FlightLog::logError(String error) {
+void FlightLog::logError(const char* error) {
 	File myFile = sd.open(ERROR_FILENAME, FILE_WRITE);
 	float time = (float)millis() / (float)1000;
 
@@ -115,7 +115,7 @@ void FlightLog::logError(String error) {
 		Serial.print("Unable to open error file");
 	}
 	myFile.close();
-} // END logError()
+}
 
   /**************************************************************************/
   /*!
@@ -130,7 +130,7 @@ void FlightLog::newFlight(bool testMode) {
 	File data = sd.open(LOG_FILENAME, FILE_WRITE);       //Creates new data file
 	if (!data) {                                                    //If unable to be initiated, throw error statement.  Do nothing
 		Serial.println("Data file unable to initiated.;");
-		SD_GO = false;
+		disk_initialized = false;
 	}
 	else {
 		if (testMode) {                                               //Adds unique header depending on if VDS is in test or flight mode
@@ -145,7 +145,7 @@ void FlightLog::newFlight(bool testMode) {
 	data = sd.open(ERROR_FILENAME, FILE_WRITE);                //Creates new error file
 	if (!data) {                                                    //If unable to be initiated, throw error statement.  Do nothing
 		Serial.println("Data file unable to initiated.;");
-		SD_GO = false;
+		disk_initialized = false;
 	}
 	else {
 		data.println("time(us),error");
@@ -155,5 +155,4 @@ void FlightLog::newFlight(bool testMode) {
 	//initializePastStates();
 } // END newFlight()
 
-FlightLog log;
-
+FlightLog flight_log;

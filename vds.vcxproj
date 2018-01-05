@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C5F80730-F44F-4478-BDAE-6634EFC2CA88}</ProjectGuid>
     <RootNamespace>$safeprojectname$</RootNamespace>
-    <ProjectName>VDS-V2_1-Software</ProjectName>
+    <ProjectName>vds</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -66,8 +66,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\Adafruit_Sensor-master;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\Wire;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\SdFatBeta\src;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\SPI;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\Adafruit_BNO055-master;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\EEPROM;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\Adafruit_BNO055-master\utility;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\Wire\utility;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\libraries;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\avr;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\util;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\utils;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\avr;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\tools\arm\arm-none-eabi\include;$(ProjectDir)..\VDS-V2_1-Software;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ProjectDir)__vm\.VDS-V2_1-Software.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\Adafruit_Sensor-master;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\Wire;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\SdFatBeta\src;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\SPI;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\Adafruit_BNO055-master;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\EEPROM;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries\Adafruit_BNO055-master\utility;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries\Wire\utility;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\libraries;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\libraries;$(ProjectDir)..\..\..\OneDrive\Documents\Arduino\libraries;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\avr;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\util;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\utils;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\teensy\avr\cores\teensy3\avr;$(ProjectDir)..\..\..\..\..\Program Files (x86)\arduino-1.6.13\hardware\tools\arm\arm-none-eabi\include;$(ProjectDir)..\vds;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)__vm\.vds.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>__HARDWARE_MK66fx1m0__;__HARDWARE_MK66FX1M0__;__MK66FX1M0__;TEENSYDUINO=134;ARDUINO=106013;F_CPU=180000000;USB_SERIAL;LAYOUT_US_ENGLISH;__cplusplus=201103L;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -81,28 +81,31 @@
     <ProjectCapability Include="VisualMicro" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="VDS-V2_1-Software.ino">
+    <None Include="vds.ino">
       <FileType>CppCode</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Adafruit_BMP280.h" />
+    <ClInclude Include="daq.hh" />
     <ClInclude Include="drag_inducers.hh" />
-    <ClInclude Include="rcr_classes.hh" />
+    <ClInclude Include="flight_log.hh" />
+    <ClInclude Include="gui.hh" />
     <ClInclude Include="globals.hh" />
     <ClInclude Include="matrix.hh" />
     <ClInclude Include="pid.hh" />
     <ClInclude Include="rcr_util.hh" />
-    <ClInclude Include="__vm\.VDS-V2_1-Software.vsarduino.h" />
+    <ClInclude Include="state_log.hh" />
+    <ClInclude Include="vehicle_state.hh" />
     <ClInclude Include="__vm\.vds.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Adafruit_BMP280.cpp" />
-    <ClCompile Include="DAQ.cpp" />
-    <ClCompile Include="DataLog.cpp" />
-    <ClCompile Include="DragBlades.cpp" />
+    <ClCompile Include="daq.cc" />
+    <ClCompile Include="flight_log.cc" />
+    <ClCompile Include="drag_inducers.cc" />
     <ClCompile Include="globals.cc" />
-    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="gui.cc" />
     <ClCompile Include="matrix.cc" />
     <ClCompile Include="pid.cc" />
     <ClCompile Include="RCR_Bmp180.cpp" />
