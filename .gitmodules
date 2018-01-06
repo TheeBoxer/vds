@@ -1,3 +1,6 @@
 [submodule "include/fruit"]
 	path = include/fruit
 	url = https://github.com/google/fruit
+[submodule "include/googletest"]
+	path = include/googletest
+	url = https://github.com/google/googletest
