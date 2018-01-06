@@ -3,6 +3,10 @@
 
 #include "Adafruit_BMP280.h"
 #include "Adafruit_BNO055.h"
+#include "globals.hh"
+
+namespace rcr {
+namespace vds {
 
 class DaqController {
  public:
@@ -28,5 +32,8 @@ class DaqController {
 };
 
 extern DaqController daq_controller;
+
+} // namespace vds
+} // namespace rcr
 
 #endif // _RCR_VDS_DAQ_HH_

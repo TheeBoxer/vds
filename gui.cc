@@ -10,7 +10,7 @@ void Gui::init() {
 	Serial.println("\r\n---Initializing rocket settings---");
 	currentRocket = readUint8_t(3 * ROCKETSTRUCT_STORSIZE);
 	if ((currentRocket > 3) || (currentRocket < 1) || isnan(currentRocket)) {
-		Serial.printf("An incompatible rocket ID # was found on the EEPROM\r\nIs it possible that this is a new Teensy?\r\nSetting rocket ID # to 1\r\n");
+		Serial.println("An incompatible rocket ID # was found on the EEPROM\r\nIs it possible that this is a new Teensy?\r\nSetting rocket ID # to 1\r\n");
 		currentRocket = 1;
 		writeUint8_t(currentRocket, 3 * ROCKETSTRUCT_STORSIZE);
 	}
@@ -225,27 +225,27 @@ void Gui::printRocket() {
 	Serial.print("Selected Rocket = ");
 	Serial.println(vehicle.name);
 	delay(50);
-	Serial.printf("Selected Rocket # = %d\r\n", currentRocket);
+	Serial.println("Selected Rocket # = %d\r\n", currentRocket);
 	delay(50);
-	Serial.printf("dryMass = %f\r\n", vehicle.dryMass);
+	Serial.println("dryMass = %f\r\n", vehicle.dryMass);
 	delay(50);
-	Serial.printf("propMass = %f\r\n", vehicle.propMass);
+	Serial.println("propMass = %f\r\n", vehicle.propMass);
 	delay(50);
-	Serial.printf("Cd_r = %f\r\n", vehicle.Cd_r);
+	Serial.println("Cd_r = %f\r\n", vehicle.Cd_r);
 	delay(50);
-	Serial.printf("Cd_b = %f\r\n", vehicle.Cd_b);
+	Serial.println("Cd_b = %f\r\n", vehicle.Cd_b);
 	delay(50);
-	Serial.printf("Ar = %f\r\n", vehicle.Ar);
+	Serial.println("Ar = %f\r\n", vehicle.Ar);
 	delay(50);
-	Serial.printf("Ab = %f\r\n", vehicle.Ab);
+	Serial.println("Ab = %f\r\n", vehicle.Ab);
 	delay(50);
-	Serial.printf("avgMotorThrust = %d\r\n", vehicle.avgMotorThrust);
+	Serial.println("avgMotorThrust = %d\r\n", vehicle.avgMotorThrust);
 	delay(50);
-	Serial.printf("targetAlt = %d\r\n", vehicle.targetAlt);
+	Serial.println("targetAlt = %d\r\n", vehicle.targetAlt);
 	delay(50);
-	Serial.printf("interVel = %d\r\n", vehicle.interVel);
+	Serial.println("interVel = %d\r\n", vehicle.interVel);
 	delay(50);
-	Serial.printf("interAlt = %d\r\n", vehicle.interAlt);
+	Serial.println("interAlt = %d\r\n", vehicle.interAlt);
 }
 
 /**************************************************************************/
@@ -309,7 +309,7 @@ void Gui::editRocket() {
 	String myVariable;
 	Serial.println("------Editing Rockets------");
 	printRocket();
-	Serial.printf("Enter the variable you want to change in the following format:\r\nvariableName=value;\r\n");
+	Serial.println("Enter the variable you want to change in the following format:\r\nvariableName=value;\r\n");
 	gui.flush_input();
 	while (!(Serial.available() > 0)) {
 		//wait
@@ -365,7 +365,7 @@ Author: Ben
 */
 /**************************************************************************/
 void Gui::printRocketMenu() {
-	Serial.printf("\r\n------Rocket SubMenu-------\r\n");
+	Serial.println("\r\n------Rocket SubMenu-------\r\n");
 	delay(100);
 	Serial.println("'e' - (e)dit rockets");
 	delay(100);

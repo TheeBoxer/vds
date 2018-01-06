@@ -6,6 +6,9 @@
 #include "WProgram.h"
 #endif
 
+namespace rcr {
+namespace vds {
+
 void DragInducers::init() {
 	//setup motor pins
 	pinMode(MOTOR_A, OUTPUT);
@@ -27,7 +30,16 @@ Author: Ben
 /**************************************************************************/
 void DragInducers::dragBladesCheck() {
 	Serial.println("\r\n-----Drag Blades Check----");	
-	Serial.printf("encMin: %d\r\nencMax: %d\r\nencPos: %d\r\nInner limit pressed: %d\r\nOutter limit pressed: %d\r\n\r\n", encMin, encMax, encPos, !digitalRead(LIM_IN), !digitalRead(LIM_OUT) );
+  Serial.print("encMin: ");
+  Serial.println(encMin);
+  Serial.print("encMax: ");
+  Serial.println(encMax);
+  Serial.print("encPos: ");
+  Serial.println(encPos);
+  Serial.print("Inner limit pressed : ");
+  Serial.println(!digitalRead(LIM_IN));
+  Serial.print("Outter limit pressed : ");
+  Serial.println(!digitalRead(LIM_OUT));
 }
 
 /**************************************************************************/
@@ -75,14 +87,14 @@ void DragInducers::motorDo(bool direction, uint8_t speed) {
 	flight_log.supStat.mtrSpdCmd = mtrSpdCmd;
 	if (!limit_in && (direction == INWARD)) {
 		analogWrite(MOTOR_PWM, 0);
-		range = myAbs(encMax - encMin);
+		range = abs(encMax - encMin);
 		encPos = 0;	
 		encMin = 0;
 		encMax = range;
 	}
 	else if (!limit_out && (direction == OUTWARD)) {
 		analogWrite(MOTOR_PWM, 0);
-		range = myAbs(encMax - encMin);
+		range = abs(encMax - encMin);
 		encPos = range;
 		encMin = 0;
 		encMax = range;
@@ -123,7 +135,7 @@ bool DragInducers::motorGoTo(int16_t goTo)
 	else if (mtrSpdCmd < 0) {
 		drag_inducers.motorDo(INWARD, -1 * mtrSpdCmd);
 	}
-	if ((myAbs(drag_inducers.encPos - encPosCmd) <= SETPOINT_TOLERANCE)) {
+	if (abs(drag_inducers.encPos - encPosCmd) <= SETPOINT_TOLERANCE) {
 		count++;
 	}
 	else {
@@ -366,5 +378,7 @@ void DragInducers::motorGoToPersistent(uint16_t goToPercent)
 	}
 }
 
-
 DragInducers drag_inducers;
+
+} // namespace vds
+} // namespace rcr

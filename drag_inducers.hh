@@ -1,11 +1,10 @@
 #ifndef _RCR_VDS_DRAGINDUCERS_HH_
 #define _RCR_VDS_DRAGINDUCERS_HH_
 
-//#if defined(ARDUINO) && ARDUINO >= 100
-//#include "arduino.h"
-//#else
-//#include "WProgram.h"
-//#endif
+#include "pid.hh"
+
+namespace rcr {
+namespace vds {
 
 class DragInducers {
  public:
@@ -37,5 +36,8 @@ class DragInducers {
 };
 
 extern DragInducers drag_inducers;
+
+} // namespace vds
+} // namespace rcr
 
 #endif // _RCR_VDS_DRAGINDUCERS_HH_

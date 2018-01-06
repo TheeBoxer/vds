@@ -4,12 +4,19 @@
 namespace rcr {
 namespace util {
 
-#undef abs // undefine forever
+void
+clear_input(HardwareSerial& s) { while (s.available()) s.read(); }
 
-template <typename T> // todo: enableif signed realnumber
-constexpr auto abs(const T&& x) -> T {
-  return x < 0 ? -x : x;
-}
+bool
+get_authorization(HardwareSerial& out);
+
+template <typename T>
+constexpr inline bool
+is_yes(T in) { return in == 'y' || in == 'Y'; }
+
+template <typename T>
+constexpr inline bool
+is_no(T in) { return in == 'n' || in == 'N'; }
 
 } // namespace util
 } // namespace rcr

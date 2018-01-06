@@ -6,6 +6,11 @@
 #include "WProgram.h"
 #endif
 
+namespace rcr {
+namespace vds {
+
+FlightLog flight_log;
+
 void FlightLog::init()
 {
 	Serial.println("\r\n-------DatLog.init-------");
@@ -101,14 +106,15 @@ bool FlightLog::readCSV(VehicleState* destination) {
 Author: Jacob
 */
 /**************************************************************************/
-void FlightLog::logError(const char* error) {
+template <typename T>
+void FlightLog::logError(T message) {
 	File myFile = sd.open(ERROR_FILENAME, FILE_WRITE);
 	float time = (float)millis() / (float)1000;
 
 	if (myFile) {
 		myFile.printf("%0.6f", time);
 		myFile.print(",");
-		myFile.print(error);
+		myFile.print(message);
 		myFile.println("");
 	}
 	else {
@@ -153,6 +159,7 @@ void FlightLog::newFlight(bool testMode) {
 	}
 
 	//initializePastStates();
-} // END newFlight()
+}
 
-FlightLog flight_log;
+} // namespace vds
+} // namespace rcr
