@@ -1,6 +1,8 @@
 #ifndef _RCR_VDS_STATELOG_HH_
 #define _RCR_VDS_STATELOG_HH_
 
+#include <cstdint>
+
 struct StateLog {
   unsigned long time;
   float alt;
@@ -23,7 +25,7 @@ struct StateLog {
   float alt_k;
   float vel_k;
   float accel_k;
-  float vSPP;
+  float spp_velocity;
   int16_t encPos;
   int16_t encPosCmd;
   bool limit_out;

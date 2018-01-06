@@ -172,7 +172,7 @@ bool Gui::loadRocket(uint8_t whichOne) {
 	vehicle.Cmin = (vehicle.Cd_r*vehicle.Ar*RHO / 2 / vehicle.dryMass);
 	vehicle.Cmax = (vehicle.Cd_b*vehicle.Ab*RHO / 2 / vehicle.dryMass);
 	vehicle.Cspp = (vehicle.Cmax + vehicle.Cmin) / 2;
-	vehicle.interAlt = (vehicle.targetAlt - log(sqrt((400 * vehicle.Cmin*(vehicle.interVel*vehicle.interVel)) / 981 + 4) / 2) / vehicle.Cmin);
+	vehicle.interAlt = (vehicle.targetAlt - log(std::sqrt((400 * vehicle.Cmin*(vehicle.interVel*vehicle.interVel)) / 981 + 4) / 2) / vehicle.Cmin);
 
 	printRocket();
 
@@ -222,10 +222,10 @@ Author: Ben
 */
 /**************************************************************************/
 void Gui::printRocket() {
-	//Serial.print("Selected Rocket = ");
+	//Serial.print("Selected Vehicle = ");
 	//Serial.println(vehicle.name);
 	//delay(50);
-	//Serial.println("Selected Rocket # = %d\r\n", currentRocket);
+	//Serial.println("Selected Vehicle # = %d\r\n", currentRocket);
 	//delay(50);
 	//Serial.println("dryMass = %f\r\n", vehicle.dryMass);
 	//delay(50);

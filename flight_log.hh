@@ -11,14 +11,14 @@ class FlightLog {
  public:
 	void printTestFileNames();
 	
-  void init();
+  bool init();
 
 	void* sd; // SdSio
 
 	void logData(bool testMode);
 
-  template <typename T>
-	void logError(T message);
+  template <typename Real>
+	void logError(Real message);
 	
   void newFlight(bool flightMode);
 	

@@ -109,7 +109,7 @@ namespace {
     Serial.println("asdfasdf");
     rcr::util::clear_input(Serial);
     while ((Serial.available() == 0) && daq_controller.getRawState(&rawState, testMode)) {
-      auto vSPP_val = rcr::vds::maths::vSPP(rawState.alt, rawState.vel);
+      auto vSPP_val = rcr::vds::maths::spp_velocity(rawState.alt, rawState.vel);
       airBrakesEncPos_val = drag_inducers.airBrakesGoToEncPos(rawState.vel, vSPP_val);
       if (!fullBrakesTest) {
         drag_inducers.motorGoTo(airBrakesEncPos_val);
@@ -124,7 +124,7 @@ namespace {
       }
 
       // log data
-      flight_log.supStat.vSPP = vSPP_val;
+      flight_log.supStat.spp_velocity = vSPP_val;
       flight_log.logData(testMode);
       if (!fullBrakesTest) {
         // call motorGoTo again to make sure the blades didn't pass their setpoint 

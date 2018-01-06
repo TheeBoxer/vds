@@ -1,6 +1,8 @@
 #ifndef _RCR_VDS_GLOBALS_HH_
 #define _RCR_VDS_GLOBALS_HH_
 
+#include <string>
+
 namespace rcr {
 namespace vds {
 
@@ -100,31 +102,12 @@ namespace vds {
 
 #define ROCKETSTRUCT_STORSIZE (10*4) // bytes
 
-struct Rocket {
-	const char* name;
-	float dryMass;
-	float propMass;
-	float Cd_r;
-	float Cd_b;
-	float Ar;
-	float Ab;
-	int avgMotorThrust;
-	int targetAlt;
-	int interVel;
-	int interAlt;
-	float Cmin;
-	float Cmax;
-	float Cspp;
-};
-
-extern Rocket vehicle;
-
 extern bool bmp_initialized;
 extern bool bno_initialized;
 extern bool disk_initialized;
 extern bool drag_inducers_initialized;
 
-extern String TEST_FILENAME;
+extern std::string TEST_FILENAME;
 
 } // namespace vds
 } // namespace rcr

@@ -3,18 +3,19 @@
 namespace rcr {
 namespace util {
 
-bool get_authorization(HardwareSerial & out) {
-  clear_input(out);
-  out.println("yes or no? (y/n)");
+bool
+get_authorization(IoStreams& s) {
+  clear_input(s);
+  s.out << "yes or no? (y/n)\n";
 
   for (;;) {
-    while (!out.available()) {}
-    auto response = out.read();
-    clear_input(out);
+    while (s.in.gcount() == 0) {}
+    auto response = s.in.get();
+    clear_input(s);
 
     if (is_yes(response)) return true;
     if (is_no(response))  return false;
-    out.println("Not a valid response; enter 'y' or 'n'.");
+    s.out << "Not a valid response; enter 'y' or 'n'.\n";
   }
 }
 

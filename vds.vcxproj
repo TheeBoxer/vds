@@ -61,6 +61,9 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <IncludePath>C:\Users\me\OneDrive\dev\vds\include\fruit;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="Adafruit_BMP280.cpp" />
     <ClCompile Include="daq.cc" />
@@ -68,12 +71,13 @@
     <ClCompile Include="flight_log.cc" />
     <ClCompile Include="globals.cc" />
     <ClCompile Include="gui.cc" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="logging.cc" />
     <ClCompile Include="matrix.cc" />
     <ClCompile Include="pid.cc" />
     <ClCompile Include="rcr_util.cc" />
     <ClCompile Include="rcr_util_unittests.cc" />
     <ClCompile Include="vds_maths.cc" />
+    <ClCompile Include="vehicle.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Adafruit_BMP280.h" />
@@ -82,12 +86,15 @@
     <ClInclude Include="flight_log.hh" />
     <ClInclude Include="globals.hh" />
     <ClInclude Include="gui.hh" />
+    <ClInclude Include="logging.hh" />
     <ClInclude Include="matrix.hh" />
     <ClInclude Include="pid.hh" />
     <ClInclude Include="rcr_util.hh" />
+    <ClInclude Include="requests.hh" />
     <ClInclude Include="state_log.hh" />
     <ClInclude Include="vds.hh" />
     <ClInclude Include="vds_maths.hh" />
+    <ClInclude Include="vehicle.hh" />
     <ClInclude Include="vehicle_state.hh" />
   </ItemGroup>
   <ItemDefinitionGroup />

@@ -1,38 +1,26 @@
 #include "flight_log.hh"
 
-#if (ARDUINO >= 100)
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
+#include "globals.hh"
 
 namespace rcr {
 namespace vds {
 
-void FlightLog::init()
-{
-	Serial.println("\r\n-------DatLog.init-------");
-	Serial.println("Initializing SD card");
-	if (!sd.begin()) {                                            //Determine if microSD card is initialized and ready to be used.
-		disk_initialized = false;
-		Serial.println("No SD card DETECTED!");
-		return;
-	}
-	else {
-		disk_initialized = true;
-		Serial.println("SD card Initialized");                    //If microSD card id ready, begin initialization of flight.  Includes creation of dataFile and it's heading
-	}
+bool FlightLog::init() {
+  auto initialized = false;
 	File myFile = sd.open(TEST_FILENAME, FILE_READ);
 	if (myFile && myFile.available()) {
 		testFileSize = myFile.size();
 		Serial.printf("Test file size: %d", testFileSize);
 		myFile.close();
+    initialized = true;
 	}
 	else {
 		Serial.print("Couldn't open test file, ");
 		Serial.print(TEST_FILENAME);
 		Serial.println(" to determine its size.");
 	}
+
+  return initialized;
 }
 
 void FlightLog::printTestFileNames() {
@@ -104,8 +92,8 @@ bool FlightLog::readCSV(VehicleState* destination) {
 Author: Jacob
 */
 /**************************************************************************/
-template <typename T>
-void FlightLog::logError(T message) {
+template <typename Real>
+void FlightLog::logError(Real message) {
 	File myFile = sd.open(ERROR_FILENAME, FILE_WRITE);
 	float time = (float)millis() / (float)1000;
 

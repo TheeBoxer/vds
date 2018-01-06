@@ -1,42 +1,35 @@
 #include "vds_maths.hh"
 
+#include "vehicle.hh"
+
+#include <cmath>
+#include <type_traits>
+
 namespace rcr {
 namespace vds {
 namespace maths {
 
-//template <typename T>
-//typename <std::enable_if<std::is_floating_point<T>::value>>
-//constexpr T
-//velocity_h(T c, T alt, T v0, T h0) {
-//  auto K1 = -1. / sqrt(c * G) * atan(v0 * sqrt(c / G));
-//  auto K2 = h0 - 1. / c * log(cos(sqrt(c * G) * K1));
-//  auto x = 1. - exp(-2 * c * (K2 - alt));
-//  auto sqrt_x = x > 0. ? sqrt(x) : 0.;
-//  auto res = exp(c * (K2 - alt)) * sqrt(G / c) * sqrt_x;
-//  return res;
-//}
+template <typename Real>
+constexpr typename std::enable_if<std::is_floating_point<Real>::value>::type
+spp_velocity(Real alt, Real vel, const Vehicle& vehicle) {
+  if (vel < vehicle.interVel)
+    return velocity_h(vehicle.Cmin, alt, 0., vehicle.targetAlt);
+  
+  if (alt < vehicle.targetAlt)
+    return velocity_h(vehicle.Cspp, alt, vehicle.interVel, vehicle.interAlt);
+  
+  return 0.;
+}
 
-double vSPP(double alt, double vel, const Rocket& vehicle) {
-  double returnVal = 0.;
-  double x = 1. - exp(-2. * vehicle.Cmin * (vehicle.targetAlt - alt));
-  if (x < 0.) x = 0;
-
-  if (vel < vehicle.interVel) {
-    returnVal = velocity_h(vehicle.Cmin, alt, 0, vehicle.targetAlt);
-  }
-  else if (vel >= vehicle.interVel) {
-    if (alt < vehicle.targetAlt) {
-      returnVal = velocity_h(vehicle.Cspp, alt, vehicle.interVel, vehicle.interAlt);
-    }
-    else {
-      returnVal = 0;
-    }
-  }
-  else {
-    returnVal = 0;
-  }
-
-  return returnVal;
+template <typename Real>
+constexpr typename std::enable_if<std::is_floating_point<Real>::value>::type
+velocity_h(Real c, Real alt, Real v0, Real h0) {
+  Real K1 = -1. / std::sqrt(c * G) * std::atan(v0 * std::sqrt(c / G));
+  Real K2 = h0 - 1. / c * std::log(std::cos(std::sqrt(c * G) * K1));
+  Real x = 1. - std::exp(-2. * c * (K2 - alt));
+  Real sqrt_x = x > 0. ? std::sqrt(x) : 0.;
+  Real res = std::exp(c * (K2 - alt)) * std::sqrt(G / c) * sqrt_x;
+  return res;
 }
 
 } // namespace maths

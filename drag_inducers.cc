@@ -1,10 +1,9 @@
 #include "drag_inducers.hh"
 
-#if (ARDUINO >= 100)
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
+#include "globals.hh"
+
+#include <cmath>
+#include <cstdint>
 
 namespace rcr {
 namespace vds {
@@ -87,14 +86,14 @@ void DragInducers::motorDo(bool direction, uint8_t speed) {
 	flight_log.supStat.mtrSpdCmd = mtrSpdCmd;
 	if (!limit_in && (direction == INWARD)) {
 		analogWrite(MOTOR_PWM, 0);
-		range = abs(encMax - encMin);
+		range = std::abs(encMax - encMin);
 		encPos = 0;	
 		encMin = 0;
 		encMax = range;
 	}
 	else if (!limit_out && (direction == OUTWARD)) {
 		analogWrite(MOTOR_PWM, 0);
-		range = abs(encMax - encMin);
+		range = std::abs(encMax - encMin);
 		encPos = range;
 		encMin = 0;
 		encMax = range;
@@ -135,7 +134,7 @@ bool DragInducers::motorGoTo(int16_t goTo)
 	else if (mtrSpdCmd < 0) {
 		drag_inducers.motorDo(INWARD, -1 * mtrSpdCmd);
 	}
-	if (abs(drag_inducers.encPos - encPosCmd) <= SETPOINT_TOLERANCE) {
+	if (std::abs(drag_inducers.encPos - encPosCmd) <= SETPOINT_TOLERANCE) {
 		count++;
 	}
 	else {
