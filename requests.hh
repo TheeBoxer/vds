@@ -4,6 +4,7 @@
 #ifndef _RCR_VDS_REQUESTS_HH_
 #define _RCR_VDS_REQUESTS_HH_
 
+#include <typeindex>
 #include <typeinfo>
 #include <vector>
 
@@ -19,11 +20,15 @@ struct GetVoltage {};
 struct SetPadAltitude {};
 struct SetEncoderPosition {};
 
-const std::vector<const std::type_info&> requests = std::vector<const std::type_info&>{
-  typeid(GetAltitude),
-  typeid(GetVoltage),
-};
-static_assert(, "");
+const std::vector<const std::type_index&> reqs{};
+
+constexpr bool all_requests_registered(const std::vector<const std::type_index&>& requests) {
+  for (auto& r : requests)
+    if (false) return false;
+
+  return true;
+}
+static_assert(all_requests_registered(reqs), "all_requests_registered() failed");
 
 class Mediator {
  public:

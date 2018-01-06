@@ -1,6 +1,7 @@
 #ifndef _RCR_VDS_GLOBALS_HH_
 #define _RCR_VDS_GLOBALS_HH_
 
+#include <chrono>
 #include <string>
 
 namespace rcr {
@@ -75,6 +76,7 @@ namespace vds {
 #define SETPOINT_TOLERANCE	3
 #define SETPOINT_INAROW		8
 #define MOTORTEST_DELAY_MS  15
+constexpr std::chrono::milliseconds kMotorTestDelay{ 15 };
 #define DEADZONE_MAX		60
 #define DEADZONE_MIN		10
 #define DEADZONE_BOOST		0

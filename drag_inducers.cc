@@ -1,7 +1,9 @@
 #include "drag_inducers.hh"
 
 #include "globals.hh"
+#include "rcr_util.hh"
 
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 
@@ -311,47 +313,51 @@ void DragInducers::motorExercise()
 Author: Ben
 */
 /**************************************************************************/
-void DragInducers::powerTest() {
-	while (!(Serial.available() > 0)) {
+void DragInducers::powerTest(util::IoStreams& s) {
+  using namespace std::chrono_literals;
+  const auto half_sec = 500ms;
+
+	while (s.in.gcount() == 0) {
 		while (!motorGoTo(encMin)) {
-			delay(MOTORTEST_DELAY_MS);
+      rcr::util::sleep_for(kMotorTestDelay);
 		}
 		while (!motorGoTo(encMax)) {
-			delay(MOTORTEST_DELAY_MS);
+      rcr::util::sleep_for(kMotorTestDelay);
 		}
 	}
-  rcr::util::clear_input(Serial); //TODO: rm
-	while (!(Serial.available() > 0)) {
+
+  rcr::util::clear_input(s);
+	while (!Serial.available()) {
 		while ( !motorGoTo(encMin)) {
-			delay(MOTORTEST_DELAY_MS);
+      rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
-		delay(500);
+		rcr::util::sleep_for(half_sec);
 		while (!motorGoTo(map(33, 0, 100, encMin, encMax))) {
-			delay(MOTORTEST_DELAY_MS);
+      rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
-		delay(500);
+		rcr::util::sleep_for(half_sec);
 		while (!motorGoTo(map(66, 0, 100, encMin, encMax))) {
-			delay(MOTORTEST_DELAY_MS);
+			rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
-		delay(500);
+		rcr::util::sleep_for(half_sec);
 		while ( !motorGoTo(encMax)) {
-			delay(MOTORTEST_DELAY_MS);
+			rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
-		delay(500);
+		rcr::util::sleep_for(half_sec);
 		while (!motorGoTo(map(66, 0, 100, encMin, encMax))) {
-			delay(MOTORTEST_DELAY_MS);
+			rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
-		delay(500);
+		rcr::util::sleep_for(half_sec);
 		while (!motorGoTo(map(33, 0, 100, encMin, encMax))) {
-			delay(MOTORTEST_DELAY_MS);
+			rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
-		delay(500);
+		rcr::util::sleep_for(half_sec);
 	}
 }
 
@@ -373,7 +379,7 @@ void DragInducers::motorGoToPersistent(uint16_t goToPercent)
 			data.println("");
 			data.close();
 		}
-		delay(MOTORTEST_DELAY_MS);
+		rcr::util::sleep_for(kMotorTestDelay);
 	}
 }
 

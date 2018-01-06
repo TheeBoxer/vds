@@ -270,7 +270,7 @@ void Gui::rocketMenu() {
 				Serial.println("------Switch Rockets-----");
 				Serial.println("Type a number 1-3");
         rcr::util::clear_input(Serial);
-				while (!(Serial.available() > 0)) {
+				while (!Serial.available()) {
 					//wait
 				}
 				tempVar = Serial.parseInt();
@@ -310,7 +310,7 @@ void Gui::editRocket() {
 	printRocket();
 	Serial.println("Enter the variable you want to change in the following format:\r\nvariableName=value;\r\n");
 	rcr::util::clear_input(Serial);
-	while (!(Serial.available() > 0)) {}
+	while (!Serial.available()) {}
 
   String myString = Serial.readStringUntil(';');
 	Serial.print("String received: ");
