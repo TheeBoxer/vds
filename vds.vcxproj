@@ -62,7 +62,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>C:\Users\me\OneDrive\dev\vds\include\fruit;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\me\OneDrive\dev\vds\include\fruit\include\fruit;C:\Users\me\OneDrive\dev\vds\include\googletest\googletest\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="Adafruit_BMP280.cpp" />
@@ -89,6 +89,7 @@
     <ClInclude Include="logging.hh" />
     <ClInclude Include="matrix.hh" />
     <ClInclude Include="pid.hh" />
+    <ClInclude Include="rcr_maths.h" />
     <ClInclude Include="rcr_util.hh" />
     <ClInclude Include="requests.hh" />
     <ClInclude Include="state_log.hh" />
