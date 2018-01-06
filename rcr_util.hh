@@ -28,11 +28,13 @@ clear_input(IoStreams& s) { s.in.clear(); }
 bool
 get_authorization(IoStreams& s);
 
-template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
+template<typename T, class = typename std::enable_if<
+  std::is_integral<T>::value>::type>
 constexpr bool
 is_yes(T in) { return in == 'y' || in == 'Y'; }
 
-template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
+template<typename T, class = typename std::enable_if<
+  std::is_integral<T>::value>::type>
 constexpr bool
 is_no(T in) { return in == 'n' || in == 'N'; }
 

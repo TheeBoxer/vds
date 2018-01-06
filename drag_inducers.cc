@@ -1,6 +1,7 @@
 #include "drag_inducers.hh"
 
 #include "globals.hh"
+#include "rcr_maths.h"
 #include "rcr_util.hh"
 
 #include <chrono>
@@ -333,12 +334,12 @@ void DragInducers::powerTest(util::IoStreams& s) {
 		}
 		motorDont();
 		rcr::util::sleep_for(half_sec);
-		while (!motorGoTo(map(33, 0, 100, encMin, encMax))) {
+		while (!motorGoTo(rcr::maths::map(33, 0, 100, encMin, encMax))) {
       rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
 		rcr::util::sleep_for(half_sec);
-		while (!motorGoTo(map(66, 0, 100, encMin, encMax))) {
+		while (!motorGoTo(rcr::maths::map(66, 0, 100, encMin, encMax))) {
 			rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
@@ -348,12 +349,12 @@ void DragInducers::powerTest(util::IoStreams& s) {
 		}
 		motorDont();
 		rcr::util::sleep_for(half_sec);
-		while (!motorGoTo(map(66, 0, 100, encMin, encMax))) {
+		while (!motorGoTo(rcr::maths::map(66, 0, 100, encMin, encMax))) {
 			rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
 		rcr::util::sleep_for(half_sec);
-		while (!motorGoTo(map(33, 0, 100, encMin, encMax))) {
+		while (!motorGoTo(rcr::maths::map(33, 0, 100, encMin, encMax))) {
 			rcr::util::sleep_for(kMotorTestDelay);
 		}
 		motorDont();
@@ -369,10 +370,9 @@ Also records data on the sd card.
 Author: Ben
 */
 /**************************************************************************/
-void DragInducers::motorGoToPersistent(uint16_t goToPercent)
-{
+void DragInducers::motorGoToPersistent(uint16_t goToPercent) {
 	File data = flight_log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
-	while (!motorGoTo(map(goToPercent, 0, 100, encMin, encMax))) {
+	while (!motorGoTo(rcr::maths::map(goToPercent, 0, 100, encMin, encMax))) {
 		data.open(MOTOR_FILENAME, FILE_WRITE);
 		if (data) {
 			data.printf("%lu,%d,%d,%d,%d,%d,%d,%d", millis(), encPos, encPosCmd, flight_log.supStat.limit_out, flight_log.supStat.limit_in, flight_log.supStat.encMax, flight_log.supStat.encMin, flight_log.supStat.mtrSpdCmd);
