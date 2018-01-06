@@ -1,6 +1,7 @@
 #include "pid.hh"
 
-
+namespace rcr {
+namespace vds {
 
 Pid::Pid(volatile int* input, int* output, int* setpoint, float Kp, float Ki, float Kd, float N, int lower, int upper)
 {
@@ -77,3 +78,5 @@ void Pid::Compute() {
 	lastTime = now;
 }
 
+} // namespace vds
+} // namespace rcr

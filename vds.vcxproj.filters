@@ -7,11 +7,67 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
+    <None Include="README.md" />
+    <None Include="vds.hh" />
     <None Include="vds.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.vds.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="daq.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drag_inducers.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="flight_log.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="globals.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pid.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rcr_util.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="state_log.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vds_maths.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vehicle_state.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Adafruit_BMP280.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RCR_Bmp180.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="daq.cc" />
+    <ClCompile Include="drag_inducers.cc" />
+    <ClCompile Include="flight_log.cc" />
+    <ClCompile Include="globals.cc" />
+    <ClCompile Include="gui.cc" />
+    <ClCompile Include="matrix.cc" />
+    <ClCompile Include="pid.cc" />
+    <ClCompile Include="rcr_util.cc" />
+    <ClCompile Include="rcr_util_unittests.cc" />
+    <ClCompile Include="vds_maths.cc" />
+    <ClCompile Include="Adafruit_BMP280.cpp" />
+    <ClCompile Include="RCR_Bmp180.cpp" />
   </ItemGroup>
 </Project>

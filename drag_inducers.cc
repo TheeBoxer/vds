@@ -378,7 +378,7 @@ void DragInducers::motorGoToPersistent(uint16_t goToPercent)
 	}
 }
 
-DragInducers drag_inducers;
+DragInducers drag_inducers{};
 
 } // namespace vds
 } // namespace rcr

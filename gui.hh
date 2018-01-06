@@ -3,6 +3,9 @@
 
 #include "vehicle_state.hh"
 
+namespace rcr {
+namespace vds {
+
 class Gui {
  public:
 	void init();
@@ -39,5 +42,8 @@ class Gui {
 };
 
 extern Gui gui;
+
+} // namespace vds
+} // namespace rcr
 
 #endif // _RCR_VDS_GUI_HH_

@@ -4,6 +4,7 @@
 #include "Adafruit_BMP280.h"
 #include "Adafruit_BNO055.h"
 #include "globals.hh"
+#include "vehicle_state.hh"
 
 namespace rcr {
 namespace vds {

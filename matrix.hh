@@ -15,9 +15,11 @@
 #include "WProgram.h"
 #endif
 
-class MatrixMath
-{
-public:
+namespace rcr {
+namespace vds {
+
+class MatrixMath {
+ public:
 	//MatrixMath();
 	void Print(float* A, int m, int n, String label);
 	void Copy(float* A, int n, int m, float* B);
@@ -30,4 +32,8 @@ public:
 };
 
 extern MatrixMath Matrix;
-#endif
+
+} // namespace vds
+} // namespace rcr
+
+#endif // MatrixMath_h

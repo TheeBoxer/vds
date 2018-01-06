@@ -98,7 +98,7 @@
 #define ROCKETSTRUCT_STORSIZE (10*4) // bytes
 
 struct Rocket {
-	const char* const name;
+	const char* name;
 	float dryMass;
 	float propMass;
 	float Cd_r;

@@ -21,7 +21,7 @@ class DragInducers {
 
   int encMin = 0;
   int encMax = ENC_RANGE;
-  volatile int encPos;
+  volatile int encPos = 0;
 
   // encoder position command
   int encPosCmd = 0;

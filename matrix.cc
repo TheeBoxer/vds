@@ -10,7 +10,8 @@
 
 #define NR_END 1
 
-MatrixMath Matrix;      // Pre-instantiate
+namespace rcr {
+namespace vds {
 
 						// Matrix Printing Routine
 						// Uses tabs to separate numbers under assumption printed float width won't cause problems
@@ -198,3 +199,8 @@ int MatrixMath::Invert(float* A, int n)
 	}
 	return 1;
 }
+
+MatrixMath Matrix{};
+
+} // namespace vds
+} // namespace rcr

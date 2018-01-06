@@ -6,6 +6,9 @@
 #include "WProgram.h"
 #endif
 
+namespace rcr {
+namespace vds {
+
 void DaqController::init(bool bnoToo) {}
 
 /**************************************************************************/
@@ -161,4 +164,7 @@ void DaqController::setPadAlt() {
 	padAlt = bmp280.readAltitude(SEALVL_PRESS);
 }
 
-DaqController daq_controller;
+DaqController daq_controller{};
+
+} // namespace vds
+} // namespace rcr

@@ -9,8 +9,6 @@
 namespace rcr {
 namespace vds {
 
-FlightLog flight_log;
-
 void FlightLog::init()
 {
 	Serial.println("\r\n-------DatLog.init-------");
@@ -160,6 +158,8 @@ void FlightLog::newFlight(bool testMode) {
 
 	//initializePastStates();
 }
+
+FlightLog flight_log{};
 
 } // namespace vds
 } // namespace rcr

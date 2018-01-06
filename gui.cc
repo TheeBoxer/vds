@@ -1,5 +1,8 @@
 #include "gui.hh"
 
+namespace rcr {
+namespace vds {
+
 /**************************************************************************/
 /*!
 @brief  Gets the current vehicle and loads it
@@ -202,17 +205,17 @@ Author: Ben
 */
 /**************************************************************************/
 void Gui::saveRocket(uint8_t whichOne) {
-	writeFloat(vehicle.dryMass, 0 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.propMass, 4 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.Cd_r, 8 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.Cd_b, 12 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.Ar, 16 + (whichOne - 1)* ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.Ab, 20 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.avgMotorThrust, 24 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.targetAlt, 28 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeFloat(vehicle.interVel, 32 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	writeString(vehicle.name, 36 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	eeprom_write_block((void *)&whichOne, (unsigned char *)(3 * ROCKETSTRUCT_STORSIZE), 1);
+	writeFloat(vehicle.dryMass, 0 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.propMass, 4 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.Cd_r, 8 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.Cd_b, 12 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.Ar, 16 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.Ab, 20 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.avgMotorThrust, 24 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.targetAlt, 28 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeFloat(vehicle.interVel, 32 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	writeString(vehicle.name, 36 + (whichOne - 1) * ROCKETSTRUCT_STORSIZE);
+	eeprom_write_block((void*)&whichOne, (unsigned char*)(3 * ROCKETSTRUCT_STORSIZE), 1);
 }
 
 /**************************************************************************/
@@ -222,30 +225,30 @@ Author: Ben
 */
 /**************************************************************************/
 void Gui::printRocket() {
-	Serial.print("Selected Rocket = ");
-	Serial.println(vehicle.name);
-	delay(50);
-	Serial.println("Selected Rocket # = %d\r\n", currentRocket);
-	delay(50);
-	Serial.println("dryMass = %f\r\n", vehicle.dryMass);
-	delay(50);
-	Serial.println("propMass = %f\r\n", vehicle.propMass);
-	delay(50);
-	Serial.println("Cd_r = %f\r\n", vehicle.Cd_r);
-	delay(50);
-	Serial.println("Cd_b = %f\r\n", vehicle.Cd_b);
-	delay(50);
-	Serial.println("Ar = %f\r\n", vehicle.Ar);
-	delay(50);
-	Serial.println("Ab = %f\r\n", vehicle.Ab);
-	delay(50);
-	Serial.println("avgMotorThrust = %d\r\n", vehicle.avgMotorThrust);
-	delay(50);
-	Serial.println("targetAlt = %d\r\n", vehicle.targetAlt);
-	delay(50);
-	Serial.println("interVel = %d\r\n", vehicle.interVel);
-	delay(50);
-	Serial.println("interAlt = %d\r\n", vehicle.interAlt);
+	//Serial.print("Selected Rocket = ");
+	//Serial.println(vehicle.name);
+	//delay(50);
+	//Serial.println("Selected Rocket # = %d\r\n", currentRocket);
+	//delay(50);
+	//Serial.println("dryMass = %f\r\n", vehicle.dryMass);
+	//delay(50);
+	//Serial.println("propMass = %f\r\n", vehicle.propMass);
+	//delay(50);
+	//Serial.println("Cd_r = %f\r\n", vehicle.Cd_r);
+	//delay(50);
+	//Serial.println("Cd_b = %f\r\n", vehicle.Cd_b);
+	//delay(50);
+	//Serial.println("Ar = %f\r\n", vehicle.Ar);
+	//delay(50);
+	//Serial.println("Ab = %f\r\n", vehicle.Ab);
+	//delay(50);
+	//Serial.println("avgMotorThrust = %d\r\n", vehicle.avgMotorThrust);
+	//delay(50);
+	//Serial.println("targetAlt = %d\r\n", vehicle.targetAlt);
+	//delay(50);
+	//Serial.println("interVel = %d\r\n", vehicle.interVel);
+	//delay(50);
+	//Serial.println("interAlt = %d\r\n", vehicle.interAlt);
 }
 
 /**************************************************************************/
@@ -305,17 +308,14 @@ Author: Ben
 /**************************************************************************/
 void Gui::editRocket() {
 	int eqlIndex;
-	String myString;
 	String myVariable;
 	Serial.println("------Editing Rockets------");
 	printRocket();
 	Serial.println("Enter the variable you want to change in the following format:\r\nvariableName=value;\r\n");
 	gui.flush_input();
-	while (!(Serial.available() > 0)) {
-		//wait
-	}
-	delay(10);
-	myString = Serial.readStringUntil(';');
+	while (!(Serial.available() > 0)) {}
+
+  String myString = Serial.readStringUntil(';');
 	Serial.print("String received: ");
 	Serial.println(myString);
 	eqlIndex = myString.indexOf('=');
@@ -350,7 +350,7 @@ void Gui::editRocket() {
 		vehicle.interVel = myString.substring(eqlIndex + 1).toInt();
 	}
 	else if (myVariable.equals("name")) {
-		vehicle.name = myString.substring(eqlIndex + 1);
+		vehicle.name = myString.substring(eqlIndex + 1).c_str();
 		Serial.println(vehicle.name);
 	}
 	else {
@@ -402,7 +402,7 @@ void Gui::writeFloat(float value, int address) {
 }
 
 void Gui::writeString(String value, int address) {
-	byte buf[4];
+	unsigned char buf[4];
 	value.getBytes(buf, 4);
 	eeprom_write_block((void *)&buf, (unsigned char *)address, 4);
 }
@@ -415,9 +415,12 @@ String Gui::readString(int address) {
 
 // helper functions:
 
-inline constexpr auto report(bool x) -> const char* {
+inline constexpr auto
+report(bool x) -> const char* {
   return x ? "OK" : "uninitialized";
 }
 
+Gui gui{};
 
-Gui gui;
+} // namespace vds
+} // namespace rcr

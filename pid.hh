@@ -9,6 +9,9 @@
 
 #include "globals.hh"
 
+namespace rcr {
+namespace vds {
+
 class Pid {
  public:
 	Pid(volatile int*, int*, int*, float, float, float, float, int, int);
@@ -28,5 +31,8 @@ class Pid {
 	unsigned long lastTime;
 	int outMin, outMax;
 };
+
+} // namespace vds
+} // namespace rcr
 
 #endif // _RCR_PID_HH_
