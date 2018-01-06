@@ -96,6 +96,7 @@
     <ClInclude Include="pid.hh" />
     <ClInclude Include="rcr_util.hh" />
     <ClInclude Include="state_log.hh" />
+    <ClInclude Include="vds_maths.hh" />
     <ClInclude Include="vehicle_state.hh" />
     <ClInclude Include="__vm\.vds.vsarduino.h" />
   </ItemGroup>
@@ -109,6 +110,8 @@
     <ClCompile Include="matrix.cc" />
     <ClCompile Include="pid.cc" />
     <ClCompile Include="RCR_Bmp180.cpp" />
+    <ClCompile Include="rcr_util.cc" />
+    <ClCompile Include="vds_maths.cc" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
