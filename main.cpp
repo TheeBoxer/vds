@@ -1,10 +1,23 @@
-#include <cstdio>
+#include <iostream>
 
-int main()
-{
-    printf("yo, yo");
-    auto i = 0;
-    ++i;
-    i = 4;
-    return 0;
+struct IoStreamsBase {
+  // stream dedicated to the expression of errors
+  std::ostream& err;
+
+  // input stream
+  std::istream& in;
+
+  // output stream
+  std::ostream& out;
+};
+
+
+int main() {
+  IoStreamsBase streams {
+    .err = std::cerr,
+    .in = std::cin,
+    .out = std::cout,
+  };
+
+  return 0;
 }
