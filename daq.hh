@@ -2,7 +2,7 @@
 #define _RCR_VDS_DAQ_HH_
 
 #include "Adafruit_BMP280.h"
-#include "Adafruit_BNO055.h"
+#include <Adafruit_BNO055\Adafruit_BNO055.h>
 #include "globals.hh"
 #include "vehicle_state.hh"
 
@@ -31,8 +31,6 @@ class DaqController {
   // Contains past BUFF_N state structures.
   VehicleState pastRawStates[BUFF_N];
 };
-
-extern DaqController daq_controller;
 
 } // namespace vds
 } // namespace rcr

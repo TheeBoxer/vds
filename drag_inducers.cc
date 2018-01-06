@@ -321,7 +321,7 @@ void DragInducers::powerTest() {
 			delay(MOTORTEST_DELAY_MS);
 		}
 	}
-	gui.eatYourBreakfast();
+  rcr::util::clear_input(Serial); //TODO: rm
 	while (!(Serial.available() > 0)) {
 		while ( !motorGoTo(encMin)) {
 			delay(MOTORTEST_DELAY_MS);

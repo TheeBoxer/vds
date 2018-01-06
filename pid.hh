@@ -1,14 +1,6 @@
 #ifndef _RCR_PID_HH_
 #define _RCR_PID_HH_
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
-#include "globals.hh"
-
 namespace rcr {
 namespace vds {
 
@@ -18,9 +10,15 @@ class Pid {
 	void Compute();
 
  private:
-	float kp;                  // * (P)roportional Tuning Parameter
-	float ki;                  // * (I)ntegral Tuning Parameter
-	float kd;                  // * (D)erivative Tuning Parameter
+  // Proportional Tuning Parameter
+	float kp;
+
+  // Integral Tuning Parameter
+  float ki;
+
+  // Derivative Tuning Parameter
+  float kd;
+
 	float n;
 
 	volatile int *myInput; 

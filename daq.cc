@@ -1,10 +1,6 @@
 #include "daq.hh"
 
-#if (ARDUINO >= 100)
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
+#include "Adafruit_BMP280.h"
 
 namespace rcr {
 namespace vds {
@@ -23,23 +19,16 @@ bool DaqController::getRawState(VehicleState* rawState, bool testMode) {
 	if (testMode) {                                                  //If file is in test mode, retrieve sensor data from data file with past flight data
 		if (!flight_log.readCSV(rawState)) {
 			Serial.println("end of flight");
-			delay(1000);
 			returnVal = false;
 		}
 		else {
-			delay(MOTORTEST_DELAY_MS);
 			returnVal = true;
 		}
 	}
 	else {
-		//get raw altitude
-#if !BMP280
-		rawState->alt = altitude_plz() - padAlt;
-#else
 		rawState->alt = bmp280.readAltitude(SEALVL_PRESS) - padAlt;
-#endif
 		if (timeOverflow) {
-			rawState->time = millis() * 100;             //Retrieves time from millis() function, stores within rawState
+			rawState->time = millis() * 100;
 		}
 		else {
 			rawState->time = micros()/10;
@@ -49,24 +38,17 @@ bool DaqController::getRawState(VehicleState* rawState, bool testMode) {
 			timeOverflow = true;
 		}
 
-		//get raw acceleration  
-		rawState->accel = get_vertical_accel();                          //Retrieves acceleration from bno055 sensor, stores within rawState
+		rawState->accel = get_vertical_accel();
 		returnVal = true;
 	}
 
-	rawState->vel = calculateVelocity(*rawState);                 //Calculates velocity using algorithm.  Takes prior acceleration and velocity values from pastRawStates
-
-#if DEBUG_RAWSTATE
-	Serial.println();
-	Serial.println("RAW STATE--------------------");
-	GUI.printState(*rawState, "raw state");                            //If in DEBUG_RAWSTATE mode, prints raw state data for evaluation.
-#endif
+	rawState->vel = calculateVelocity(*rawState);
 	return returnVal;
-} // END getRawState()
+}
 
 float DaqController::get_vertical_accel() {
-	imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
-  imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+	auto gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+  auto linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
   double
     g_x = 0.,
     g_y = 0.,
@@ -83,13 +65,14 @@ float DaqController::get_vertical_accel() {
 	l_y = linear.y();
 	l_z = linear.z();
 
-	flight_log.supStat.rollAxisGrav = g_x;
-	flight_log.supStat.yawAxisGrav = g_y;
-	flight_log.supStat.pitchAxisGrav = g_z;
+  auto& state = flight_log.supStat;
+	state.rollAxisGrav = g_x;
+	state.yawAxisGrav = g_y;
+	state.pitchAxisGrav = g_z;
 
-	flight_log.supStat.rollAxisLin = l_x;
-	flight_log.supStat.yawAxisLin = l_y;
-	flight_log.supStat.pitchAxisLin = l_z;
+	state.rollAxisLin = l_x;
+	state.yawAxisLin = l_y;
+  state.pitchAxisLin = l_z;
 
 	float res = linear.dot(gravity) / 9.81;
 	return res;
@@ -163,8 +146,6 @@ Author: Ben
 void DaqController::setPadAlt() {
 	padAlt = bmp280.readAltitude(SEALVL_PRESS);
 }
-
-DaqController daq_controller{};
 
 } // namespace vds
 } // namespace rcr

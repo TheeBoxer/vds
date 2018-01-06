@@ -1,6 +1,9 @@
 #ifndef _RCR_VDS_GLOBALS_HH_
 #define _RCR_VDS_GLOBALS_HH_
 
+namespace rcr {
+namespace vds {
+
 #define DEBUG_EMERGENCY			false				//toggles print statements that are super detailed
 #define DEBUG_FLIGHTMODE		false
 #define DEBUG_KALMAN			false
@@ -122,5 +125,8 @@ extern bool disk_initialized;
 extern bool drag_inducers_initialized;
 
 extern String TEST_FILENAME;
+
+} // namespace vds
+} // namespace rcr
 
 #endif // _RCR_VDS_GLOBALS_HH_

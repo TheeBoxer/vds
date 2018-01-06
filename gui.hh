@@ -41,8 +41,6 @@ class Gui {
 	uint8_t currentRocket = 1;
 };
 
-extern Gui gui;
-
 } // namespace vds
 } // namespace rcr
 

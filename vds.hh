@@ -9,29 +9,32 @@
 #include "rcr_util.hh"
 #include "vds_maths.hh"
 
-#include <SdFat.h>
-#include <SPI.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <Wire.h>
+using namespace ::rcr::vds;
 
 namespace rcr {
 namespace vds {
 
 namespace {
-  const bool* const must_be_initialized[] { &bmp_initialized, &bno_initialized, &drag_inducers_initialized, &disk_initialized };
+  DaqController daq_controller{};
+  Gui gui{};
+  const bool* const must_be_initialized[] {
+    &::rcr::vds::bmp_initialized,
+    &::rcr::vds::bno_initialized,
+    &::rcr::vds::drag_inducers_initialized,
+    &::rcr::vds::disk_initialized,
+  };
 
   void flightMode(bool testMode, bool fullBrakesTest);
 
-  void d() { drag_inducers.dragBladesCheck(); }
+  void d() { ::rcr::vds::drag_inducers.dragBladesCheck(); }
   void f(bool &test_mode, bool &fullBrakesTest) {
-    gui.flush_input();
+    rcr::util::clear_input(Serial);
     Serial.println("------Choose Flight Mode Settings-----");
 
     Serial.println("test mode?");
     {
       auto auth = rcr::util::get_authorization(Serial);
-      flight_log.newFlight(auth);
+      ::rcr::vds::flight_log.newFlight(auth);
       test_mode = auth;
     }
 
@@ -42,7 +45,7 @@ namespace {
       for (auto& initialized : must_be_initialized) {
         if (!*initialized && !test_mode) {
           Serial.println("Cannot enter flight mode. A sensor or sd card is not initialized.");
-          flight_log.logError(SENSOR_UNIT);
+          ::rcr::vds::flight_log.logError(SENSOR_UNIT);
           return;
         }
       }
@@ -54,45 +57,44 @@ namespace {
     Serial.print("Full-brakes Test: ");
     Serial.println(fullBrakesTest ? "ON" : "OFF");
 
-    if (!test_mode) daq_controller.setPadAlt();
+    if (!test_mode) ::rcr::vds::daq_controller.setPadAlt();
     flightMode(test_mode, fullBrakesTest);
   }
   void i() {
     Serial.println("Inching Inward");
-    drag_inducers.motorDo(INWARD, DEADZONE_MAX + 15);
-    delay(250);
-    drag_inducers.motorDont();
+    ::rcr::vds::drag_inducers.motorDo(INWARD, DEADZONE_MAX + 15);
+    ::rcr::vds::drag_inducers.motorDont();
   }
   void m() {
-    gui.flush_input();
+    rcr::util::clear_input(Serial);
     Serial.println("\n\n----- Calibrate Motor -----;");
-    drag_inducers.motorTest();
+    ::rcr::vds::drag_inducers.motorTest();
   }
   void o() {
     Serial.println("Inching Outward");
-    drag_inducers.motorDo(OUTWARD, DEADZONE_MAX + 15);
+    ::rcr::vds::drag_inducers.motorDo(OUTWARD, DEADZONE_MAX + 15);
     delay(250);
-    drag_inducers.motorDont();
+    ::rcr::vds::drag_inducers.motorDont();
   }
   void p() {
     Serial.println("Power test");
-    gui.flush_input();
-    drag_inducers.powerTest();
-    drag_inducers.motorDont();
+    rcr::util::clear_input(Serial);
+    ::rcr::vds::drag_inducers.powerTest();
+    ::rcr::vds::drag_inducers.motorDont();
   }
   void r() {
-    gui.flush_input();
+    rcr::util::clear_input(Serial);
     gui.rocketMenu();
   }
   void s() {
-    flight_log.init();
-    daq_controller.init(false);
+    ::rcr::vds::flight_log.init();
+    ::rcr::vds::daq_controller.init(false);
     gui.init();
-    drag_inducers.dragBladesCheck();
+    ::rcr::vds::drag_inducers.dragBladesCheck();
   }
   void switch_default() {
     Serial.println("Unkown code received - main menu");
-    flight_log.logError(INVALID_MENU);
+    ::rcr::vds::flight_log.logError(INVALID_MENU);
   }
 
   /**************************************************************************/
@@ -102,10 +104,10 @@ namespace {
   */
   /**************************************************************************/
   void flightMode(bool testMode, bool fullBrakesTest) {
-    VehicleState rawState, filteredState;
+    VehicleState rawState{}, filteredState{};
     int airBrakesEncPos_val = 0;
     Serial.println("asdfasdf");
-    gui.flush_input();
+    rcr::util::clear_input(Serial);
     while ((Serial.available() == 0) && daq_controller.getRawState(&rawState, testMode)) {
       auto vSPP_val = rcr::vds::maths::vSPP(rawState.alt, rawState.vel);
       airBrakesEncPos_val = drag_inducers.airBrakesGoToEncPos(rawState.vel, vSPP_val);
@@ -138,7 +140,7 @@ namespace {
       }
     }
     Serial.println("End of flight mode. Returning drag blades...");
-    gui.flush_input();
+    rcr::util::clear_input(Serial);
     while (digitalRead(LIM_IN) && (Serial.available() == 0)) {
       delay(MOTORTEST_DELAY_MS);
       drag_inducers.motorDo(INWARD, DEADZONE_MAX + 10);
@@ -153,9 +155,9 @@ namespace {
     // If pinA and pinB are both high or both low, it is spinning forward. If 
     // they're different, it's going backward.
     if (digitalRead(ENC_A) == digitalRead(ENC_B))
-      --drag_inducers.encPos;
+      --::rcr::vds::drag_inducers.encPos;
     else
-      ++drag_inducers.encPos;
+      ++::rcr::vds::drag_inducers.encPos;
   }
 } // namespace
 
@@ -170,19 +172,20 @@ setup() {
 
 	while (!begin)
 		if (Serial.available() > 0)
-			if (Serial.read() == 's') begin = true;
+			if (Serial.read() == 's')
+        begin = true;
+	
+  rcr::util::clear_input(Serial);
+  gui.printTitle();
 
-	gui.flush_input();
-	gui.printTitle();
-
-	gui.init();
-	flight_log.init();
-	daq_controller.init(true);
-	drag_inducers.init();
+  gui.init();
+  ::rcr::vds::flight_log.init();
+  ::rcr::vds::daq_controller.init(true);
+  ::rcr::vds::drag_inducers.init();
 
 	attachInterrupt(digitalPinToInterrupt(ENC_A), doEncoder, RISING);
-	drag_inducers.dragBladesCheck();
-	gui.printMenu();
+  ::rcr::vds::drag_inducers.dragBladesCheck();
+  gui.printMenu();
 }
 
 inline void
@@ -240,7 +243,7 @@ loop() {
         break;
       }
 		}
-		gui.flush_input();
+		rcr::util::clear_input(Serial);
 		gui.printMenu();
 	}
 }

@@ -152,9 +152,6 @@ void Gui::flush_input() {
 	while (Serial.available()) Serial.read();
 }
 
-
-
-
 /**************************************************************************/
 /*!
 @brief  Loads the vehicle indicated by whichOne from its designated spot in EEPROM
@@ -171,7 +168,7 @@ bool Gui::loadRocket(uint8_t whichOne) {
 	vehicle.avgMotorThrust = readFloat(24 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
 	vehicle.targetAlt = readFloat(28 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
 	vehicle.interVel = readFloat(32 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	vehicle.name = readString(36 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
+	//TODO: vehicle.name = readString(36 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
 	vehicle.Cmin = (vehicle.Cd_r*vehicle.Ar*RHO / 2 / vehicle.dryMass);
 	vehicle.Cmax = (vehicle.Cd_b*vehicle.Ab*RHO / 2 / vehicle.dryMass);
 	vehicle.Cspp = (vehicle.Cmax + vehicle.Cmin) / 2;
@@ -272,7 +269,7 @@ void Gui::rocketMenu() {
 			case 's'://switch rockets
 				Serial.println("------Switch Rockets-----");
 				Serial.println("Type a number 1-3");
-				gui.flush_input();
+        rcr::util::clear_input(Serial);
 				while (!(Serial.available() > 0)) {
 					//wait
 				}
@@ -294,7 +291,7 @@ void Gui::rocketMenu() {
 				Serial.println("unknown code received - rocket submenu");
 				break;
 			}
-			gui.flush_input();
+      rcr::util::clear_input(Serial);
 			printRocketMenu();
 		}
 	}
@@ -312,7 +309,7 @@ void Gui::editRocket() {
 	Serial.println("------Editing Rockets------");
 	printRocket();
 	Serial.println("Enter the variable you want to change in the following format:\r\nvariableName=value;\r\n");
-	gui.flush_input();
+	rcr::util::clear_input(Serial);
 	while (!(Serial.available() > 0)) {}
 
   String myString = Serial.readStringUntil(';');
@@ -419,8 +416,6 @@ inline constexpr auto
 report(bool x) -> const char* {
   return x ? "OK" : "uninitialized";
 }
-
-Gui gui{};
 
 } // namespace vds
 } // namespace rcr
