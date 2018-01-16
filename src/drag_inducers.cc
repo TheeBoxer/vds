@@ -1,5 +1,6 @@
 #include "drag_inducers.hh"
 
+#include "pin_io.hh"
 #include "globals.hh"
 #include "limit_switches.hh"
 #include "../rcr_maths.h"
@@ -12,18 +13,7 @@
 namespace rcr {
 namespace vds {
 
-void DragInducers::init() {
-	//setup motor pins
-	pinMode(rcr::vds::digital_io::Pin::MOTOR_A, OUTPUT);
-	pinMode(rcr::vds::digital_io::Pin::MOTOR_B, OUTPUT);
-	pinMode(rcr::vds::digital_io::Pin::MOTOR_PWM, OUTPUT);
-	//setup encoder pins
-	pinMode(rcr::vds::digital_io::Pin::ENC_A, INPUT);
-	pinMode(rcr::vds::digital_io::Pin::ENC_B, INPUT);
-	//setup limit switch pins
-	pinMode(rcr::vds::digital_io::Pin::LIM_OUT, INPUT);
-	pinMode(rcr::vds::digital_io::Pin::LIM_IN, INPUT);
-}
+void DragInducers::init() {}
 
 /**************************************************************************/
 /*!
@@ -40,9 +30,9 @@ void DragInducers::dragBladesCheck() {
   out << "encPos: ";
   Serial.println(encPos);
   out << "Inner limit pressed : ";
-  Serial.println(!digitalRead(rcr::vds::digital_io::Pin::LIM_IN));
+  Serial.println(!digitalRead(rcr::vds::io::Pin::LimitIn));
   out << "Outter limit pressed : ";
-  Serial.println(!digitalRead(rcr::vds::digital_io::Pin::LIM_OUT));
+  Serial.println(!digitalRead(rcr::vds::io::Pin::LimitOut));
 }
 
 /**************************************************************************/
@@ -69,18 +59,26 @@ Author: Ben
 */
 /**************************************************************************/
 void DragInducers::motorDo(BladeDirection direction, uint8_t speed) {
-  bool fully_closed = m_.send(blades::limit_switches::IsInnerSwitchEnabled{}); 
+  using namespace io;
+  using namespace io::analog;
+  using namespace io::digital;
+
+  switch (direction) {
+  case BladeDirection::Out: {
+    m_.send(DigitalWrite{ Pin::MotorA, true });
+    m_.send(DigitalWrite{ Pin::MotorB, false });
+    break;
+  }
+  case BladeDirection::In: {
+    m_.send(DigitalWrite{ Pin::MotorA, false });
+    m_.send(DigitalWrite{ Pin::MotorB, true });
+    break;
+  }
+  } // switch
+	
+  bool fully_closed = m_.send(blades::limit_switches::IsInnerSwitchEnabled{});
   bool fully_open = m_.send(blades::limit_switches::IsOuterSwitchEnabled{});
 
-	if (direction == BladeDirection::Out) {
-		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_A, kHigh);
-		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_B, kLow);
-	}
-	else {
-		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_A, kLow);
-		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_B, kHigh);
-	}
-	
 	//flight_log.supStat.encPos = encPos;
 	//flight_log.supStat.encPosCmd = encPosCmd;
 	//flight_log.supStat.limit_in = fully_closed;
@@ -90,21 +88,21 @@ void DragInducers::motorDo(BladeDirection direction, uint8_t speed) {
 	//flight_log.supStat.mtrSpdCmd = mtrSpdCmd;
 
 	if (!fully_closed && (direction == BladeDirection::In)) {
-		analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, 0);
+    m_.send(AnalogWrite{ Pin::MotorPwm, 0 });
 		int range = std::abs(encMax - encMin);
 		encPos = 0;	
 		encMin = 0;
 		encMax = range;
 	}
 	else if (!fully_open && (direction == BladeDirection::Out)) {
-		analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, 0);
+    m_.send(AnalogWrite{ Pin::MotorPwm, 0 });
 		int range = std::abs(encMax - encMin);
 		encPos = range;
 		encMin = 0;
 		encMax = range;
 	}
 	else {
-		analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, speed);
+    m_.send(AnalogWrite{ Pin::MotorPwm, speed });
 	}
 	if ((encMax - encMin) < 9 * ENC_RANGE / 10) {
 		encMin = 0;
@@ -114,9 +112,13 @@ void DragInducers::motorDo(BladeDirection direction, uint8_t speed) {
 }
 
 void DragInducers::motorDont() {
-	digitalWrite(rcr::vds::digital_io::Pin::MOTOR_A, kLow);
-	digitalWrite(rcr::vds::digital_io::Pin::MOTOR_B, kLow);
-	analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, 0);
+  using namespace io;
+  using namespace io::analog;
+  using namespace io::digital;
+
+  m_.send(DigitalWrite{ Pin::MotorA, false });
+  m_.send(DigitalWrite{ Pin::MotorB, false });
+  m_.send(AnalogWrite{ Pin::MotorPwm, 0 });
 }
 
 /**************************************************************************/
@@ -124,28 +126,28 @@ void DragInducers::motorDont() {
 @brief  This function returns whether or not the dragblades are at the given
 encoder position. If false, motorGoTo() calculates the speed and direction required
 for the dragblades to reach their target. To return true, the blades must be at 
-their target for at least SETPOINT_INAROW succesive calls of motorGoTo()
+their target for at least kSetPointInARow succesive calls of motorGoTo()
 Author: Ben
 */
 /**************************************************************************/
 bool DragInducers::motorGoTo(int goTo)
 {
-	static uint8_t count = 0;
+  static auto count = decltype(kSetPointInARow){0};
 	encPosCmd = goTo;
 	motorPID.Compute();
 	if (mtrSpdCmd >= 0) {
-		drag_inducers.motorDo(OUTWARD, mtrSpdCmd);
+		drag_inducers.motorDo(BladeDirection::Out, mtrSpdCmd);
 	}
 	else if (mtrSpdCmd < 0) {
-		drag_inducers.motorDo(INWARD, -1 * mtrSpdCmd);
+		drag_inducers.motorDo(BladeDirection::In, -1 * mtrSpdCmd);
 	}
-	if (std::abs(drag_inducers.encPos - encPosCmd) <= SETPOINT_TOLERANCE) {
+	if (std::abs(drag_inducers.encPos - encPosCmd) <= kSetPointTolerance) {
 		count++;
 	}
 	else {
 		count = 0;
 	}
-	if (count >= SETPOINT_INAROW) {
+	if (count >= kSetPointInARow) {
 		count = 0;		
 		return true;
 	}
@@ -177,16 +179,16 @@ void DragInducers::motorTest() {
 		data.close();                                               //Closes data file after use.
 	}
 	timer = millis();
-	while (digitalRead(rcr::vds::digital_io::Pin::LIM_OUT)) {
-		motorDo(OUTWARD, DEADZONE_MAX);
+	while (digitalRead(rcr::vds::io::Pin::LimitOut)) {
+		motorDo(BladeDirection::Out, DEADZONE_MAX);
 		if ((Serial.available() > 0) || ((millis() - timer) >4000)) {
 			motorDont();
 			return;
 		}
 	}
 	timer = millis();
-	while (digitalRead(rcr::vds::digital_io::Pin::LIM_IN)) {
-		motorDo(INWARD, DEADZONE_MAX);
+	while (digitalRead(rcr::vds::io::Pin::LimitIn)) {
+		motorDo(BladeDirection::In, DEADZONE_MAX);
 		if ((Serial.available() > 0) || ((millis() - timer) >4000)) {
 			motorDont();
 			return;
@@ -202,48 +204,22 @@ void DragInducers::motorTest() {
 	motorDont();
   sleep_for(delay);
 
-  for (uint16_t percent = 0; percent < 100;) {
+  auto percent = 0;
+
+  for (; percent < 100;) {
     motorGoToPersistent(percent += 25);
     motorGoToPersistent(percent);
     motorDont();
     sleep_for(delay);
   }
-
-
-
-	motorGoToPersistent(25);
-	motorGoToPersistent(50);
-	motorDont();
-  sleep_for(delay);
-	motorGoToPersistent(50);
-	motorGoToPersistent(75);
-	motorDont();
-  sleep_for(delay);
-	motorGoToPersistent(75);
-	motorGoToPersistent(100);
-	motorDont();
-  sleep_for(delay);
-
-	motorGoToPersistent(100);
-	motorGoToPersistent(75);
-	motorDont();
-  sleep_for(delay);
-
-	motorGoToPersistent(75);
-	motorGoToPersistent(50);
-	motorDont();
-  sleep_for(delay);
-
-	motorGoToPersistent(50);
-	motorGoToPersistent(25);
-	motorDont();
-  sleep_for(delay);
-
-	motorGoToPersistent(25);
-	motorGoToPersistent(0);
-	motorDont();
-	motorGoToPersistent(0);
-	motorDont();
+  for (; percent != 0; ) {
+    motorGoToPersistent(percent -= 25);
+    motorGoToPersistent(percent);
+    motorDont();
+    sleep_for(delay);
+  }
+  motorGoToPersistent(0);
+  motorDont();
 }
 
 /**************************************************************************/
@@ -260,7 +236,7 @@ void DragInducers::motorExercise()
 	int deadZoneSpeed = 63;
 	unsigned long t = 0;
 	unsigned long t0 = 0;
-	bool dir = OUTWARD;
+	auto dir = BladeDirection::Out;
 	float derp;
 	uint8_t spd = 0;
 	flight_log.sd.remove("motorExercise.dat");
@@ -273,37 +249,37 @@ void DragInducers::motorExercise()
 		myFile = flight_log.sd.open("motorExercise.dat", FILE_WRITE);
 		t = micros() - t0;
 		if (t < 1000000) {
-			dir = OUTWARD;
+			dir = BladeDirection::Out;
 			spd = 255;
 		}
 		else if (t < 2000000) {
-			dir = OUTWARD;
+			dir = BladeDirection::Out;
 			derp = (float)(t - 1000000) / 1000000;
 			spd = derp * 255;
 			//out << "derp = ";
 			//Serial.println(derp);
 		}
 		else if (t < 3000000) {
-			dir = OUTWARD;
+			dir = BladeDirection::Out;
 			spd = 0;
 		}
 		else if (t < 4000000) {
-			dir = OUTWARD;
+			dir = BladeDirection::Out;
 			spd = deadZoneSpeed;
 		}
 		else if (t < 5000000) {
-			dir = OUTWARD;
+			dir = BladeDirection::Out;
 			derp = (float)(t - 4000000) / 1000000;
 			spd = deadZoneSpeed + derp * (255 - deadZoneSpeed);
 			//out << "derp = ";
 			//Serial.println(derp);
 		}
 		else if (t < 6000000) {
-			dir = INWARD;
+			dir = BladeDirection::In;
 			spd = 255;
 		}
 		else if (t < 7000000) {
-			dir = OUTWARD;
+			dir = BladeDirection::Out;
 			spd = 0;
 		}
 		//Serial.print(t);

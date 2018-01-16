@@ -2,6 +2,7 @@
 #define _RCR_VDS_GLOBALS_HH_
 
 #include <chrono>
+#include <cstdint>
 #include <string>
 
 namespace rcr {
@@ -58,21 +59,18 @@ constexpr short kHigh = 1;
 #define MAX_EXP_INTERALT		1700
 
 
-//physical constants. Used for Kalman filter and SPP
-#define RHO					1.18
-#define G					9.81
+constexpr double kRho = 1.18;
 
 //motor stuff
 enum class BladeDirection {
   In,
   Out,
 };
-#define OUTWARD				BladeDirection::Out
-#define INWARD				BladeDirection::In
-#define SETPOINT_TOLERANCE	3
-#define SETPOINT_INAROW		8
-#define MOTORTEST_DELAY_MS  15
+
+int kSetPointTolerance = 3;
+constexpr uint8_t kSetPointInARow = 8;
 constexpr std::chrono::milliseconds kMotorTestDelay{ 15 };
+
 #define DEADZONE_MAX		60
 #define DEADZONE_MIN		10
 #define DEADZONE_BOOST		0

@@ -143,8 +143,8 @@ bool Gui::loadRocket(uint8_t whichOne) {
 	vehicle.targetAlt = readFloat(28 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
 	vehicle.interVel = readFloat(32 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
 	//TODO: vehicle.name = readString(36 + (whichOne - 1)*ROCKETSTRUCT_STORSIZE);
-	vehicle.Cmin = (vehicle.Cd_r*vehicle.Ar*RHO / 2 / vehicle.dryMass);
-	vehicle.Cmax = (vehicle.Cd_b*vehicle.Ab*RHO / 2 / vehicle.dryMass);
+	vehicle.Cmin = (vehicle.Cd_r*vehicle.Ar*kRho / 2 / vehicle.dryMass);
+	vehicle.Cmax = (vehicle.Cd_b*vehicle.Ab*kRho / 2 / vehicle.dryMass);
 	vehicle.Cspp = (vehicle.Cmax + vehicle.Cmin) / 2;
 	vehicle.interAlt = (vehicle.targetAlt - log(std::sqrt((400 * vehicle.Cmin*(vehicle.interVel*vehicle.interVel)) / 981 + 4) / 2) / vehicle.Cmin);
 

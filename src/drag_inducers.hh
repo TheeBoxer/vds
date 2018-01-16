@@ -4,14 +4,12 @@
 #include <mediator.hpp>
 #include "pid.hh"
 
-using mediator = holden::mediator::mediator;
-
 namespace rcr {
 namespace vds {
 
 class DragInducers {
  public:
-  DragInducers(mediator& m) : m_(m),
+  DragInducers(holden::mediator::mediator& m) : m_(m),
     motorPID(&encPos, &mtrSpdCmd, &encPosCmd, KP, KI, KD, KN, -255, 255) {}
   void init();
   void dragBladesCheck();
@@ -31,7 +29,7 @@ class DragInducers {
   int encPosCmd = 0;
 
  private:
-  mediator& m_;
+   holden::mediator::mediator& m_;
 	Pid motorPID;
 
   // motor speed command

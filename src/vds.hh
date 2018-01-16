@@ -9,7 +9,7 @@
 #include "rcr_util.hh"
 #include "vds_maths.hh"
 
-using namespace ::rcr::vds;
+using namespace rcr::vds; // TODO: rm this
 
 namespace rcr {
 namespace vds {
@@ -18,15 +18,15 @@ namespace {
   DaqController daq_controller{};
   Gui gui{};
   const bool* const must_be_initialized[] {
-    &::rcr::vds::bmp_initialized,
-    &::rcr::vds::bno_initialized,
-    &::rcr::vds::drag_inducers_initialized,
-    &::rcr::vds::disk_initialized,
+    &rcr::vds::bmp_initialized,
+    &rcr::vds::bno_initialized,
+    &rcr::vds::drag_inducers_initialized,
+    &rcr::vds::disk_initialized,
   };
 
   void flightMode(bool testMode, bool fullBrakesTest);
 
-  void d() { ::rcr::vds::drag_inducers.dragBladesCheck(); }
+  void d() { rcr::vds::drag_inducers.dragBladesCheck(); }
   void f(bool &test_mode, bool &fullBrakesTest) {
     rcr::util::clear_input(Serial);
     out << "------Choose Flight Mode Settings-----\n";
@@ -34,7 +34,7 @@ namespace {
     out << "test mode?\n";
     {
       auto auth = rcr::util::get_authorization(Serial);
-      ::rcr::vds::flight_log.newFlight(auth);
+      rcr::vds::flight_log.newFlight(auth);
       test_mode = auth;
     }
 
@@ -45,7 +45,7 @@ namespace {
       for (auto& initialized : must_be_initialized) {
         if (!*initialized && !test_mode) {
           out << "Cannot enter flight mode. A sensor or sd card is not initialized.\n";
-          ::rcr::vds::flight_log.logError(SENSOR_UNIT);
+          rcr::vds::flight_log.logError(SENSOR_UNIT);
           return;
         }
       }
@@ -57,44 +57,45 @@ namespace {
     out << "Full-brakes Test: ";
     Serial.println(fullBrakesTest ? "ON" : "OFF");
 
-    if (!test_mode) ::rcr::vds::daq_controller.setPadAlt();
+    if (!test_mode) rcr::vds::daq_controller.setPadAlt();
     flightMode(test_mode, fullBrakesTest);
   }
   void i() {
     out << "Inching Inward\n";
-    ::rcr::vds::drag_inducers.motorDo(INWARD, DEADZONE_MAX + 15);
-    ::rcr::vds::drag_inducers.motorDont();
+    rcr::vds::drag_inducers.motorDo(BladeDirection::In, DEADZONE_MAX + 15);
+    rcr::vds::drag_inducers.motorDont();
   }
   void m() {
     rcr::util::clear_input(Serial);
     out << "\n\n----- Calibrate Motor -----;\n";
-    ::rcr::vds::drag_inducers.motorTest();
+    rcr::vds::drag_inducers.motorTest();
   }
   void o() {
     out << "Inching Outward\n";
-    ::rcr::vds::drag_inducers.motorDo(OUTWARD, DEADZONE_MAX + 15);
+    rcr::vds::drag_inducers.moto
+      rDo(BladeDirection::Out, DEADZONE_MAX + 15);
     delay(250);
-    ::rcr::vds::drag_inducers.motorDont();
+    rcr::vds::drag_inducers.motorDont();
   }
   void p() {
     out << "Power test\n";
     rcr::util::clear_input(Serial);
-    ::rcr::vds::drag_inducers.powerTest();
-    ::rcr::vds::drag_inducers.motorDont();
+    rcr::vds::drag_inducers.powerTest();
+    rcr::vds::drag_inducers.motorDont();
   }
   void r() {
     rcr::util::clear_input(Serial);
     gui.rocketMenu();
   }
   void s() {
-    ::rcr::vds::flight_log.init();
-    ::rcr::vds::daq_controller.init(false);
+    rcr::vds::flight_log.init();
+    rcr::vds::daq_controller.init(false);
     gui.init();
-    ::rcr::vds::drag_inducers.dragBladesCheck();
+    rcr::vds::drag_inducers.dragBladesCheck();
   }
   void switch_default() {
     out << "Unkown code received - main menu\n";
-    ::rcr::vds::flight_log.logError(INVALID_MENU);
+    rcr::vds::flight_log.logError(INVALID_MENU);
   }
 
   /**************************************************************************/
@@ -141,20 +142,20 @@ namespace {
     }
     out << "End of flight mode. Returning drag blades...\n";
     rcr::util::clear_input(Serial);
-    while (digitalRead(rcr::vds::digital_io::Pin::LIM_IN) && (Serial.available() == 0)) {
+    while (digitalRead(rcr::vds::io::Pin::LimitIn) && (Serial.available() == 0)) {
       rcr::util::sleep_for(kMotorTestDelay);
-      drag_inducers.motorDo(INWARD, DEADZONE_MAX + 10);
+      drag_inducers.motorDo(BladeDirection::In, DEADZONE_MAX + 10);
     }
     drag_inducers.motorDont();
   }
 
-  // This is an ISR! it is called when the pin belonging to rcr::vds::digital_io::Pin::ENC_A sees a rising 
+  // This is an ISR! it is called when the pin belonging to rcr::vds::io::Pin::EncA sees a rising 
   // edge. This functions purpose is to keep track of the encoder's position.
   // Author: Jacob & Ben
   void doEncoder() {
     // If pinA and pinB are both high or both low, it is spinning forward. If 
     // they're different, it's going backward.
-    if (digitalRead(rcr::vds::digital_io::Pin::ENC_A) == digitalRead(rcr::vds::digital_io::Pin::ENC_B))
+    if (digitalRead(rcr::vds::io::Pin::EncA) == digitalRead(rcr::vds::io::Pin::EncB))
       --rcr::vds::drag_inducers.encPos;
     else
       ++rcr::vds::drag_inducers.encPos;
@@ -181,8 +182,8 @@ setup() {
   rcr::vds::daq_controller.init(true);
   rcr::vds::drag_inducers.init();
 
-	attachInterrupt(digitalPinToInterrupt(rcr::vds::digital_io::Pin::ENC_A), doEncoder, RISING);
-  ::rcr::vds::drag_inducers.dragBladesCheck();
+	attachInterrupt(digitalPinToInterrupt(rcr::vds::io::Pin::EncA), doEncoder, RISING);
+  rcr::vds::drag_inducers.dragBladesCheck();
   gui.printMenu();
 }
 

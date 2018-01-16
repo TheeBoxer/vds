@@ -3,11 +3,6 @@
 
 #include <mediator.hpp>
 
-template <typename T, typename U>
-using request = holden::mediator::request<T, U>;
-template <typename T>
-using handler = holden::mediator::request_handler<T>;
-
 namespace rcr {
 namespace vds {
 namespace blades {
@@ -20,14 +15,16 @@ enum class LimitSwitch {
 
 class LimitSwitchHandler;
 
-struct IsInnerSwitchEnabled : public request<bool, LimitSwitchHandler> {};
-struct IsOuterSwitchEnabled : public request<bool, LimitSwitchHandler> {};
+struct IsInnerSwitchEnabled
+  : public holden::mediator::request<bool, LimitSwitchHandler> {};
+struct IsOuterSwitchEnabled
+  : public holden::mediator::request<bool, LimitSwitchHandler> {};
 
 class LimitSwitchHandler
-  : public handler<IsInnerSwitchEnabled>
-  , public handler<IsOuterSwitchEnabled> {
+  : public holden::mediator::request_handler<IsInnerSwitchEnabled>
+  , public holden::mediator::request_handler<IsOuterSwitchEnabled> {
  public:
-  // TODO: implement these (was digitalRead(rcr::vds::digital_io::Pin::LIM_IN);)
+  // TODO: implement these (was digitalRead(rcr::vds::io::Pin::LimitIn);)
   bool handle(const IsOuterSwitchEnabled& m) { return true; }
   bool handle(const IsInnerSwitchEnabled& m) { return true; }
 };
