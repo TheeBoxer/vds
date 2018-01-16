@@ -66,37 +66,39 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="Adafruit_BMP280.cpp" />
-    <ClCompile Include="daq.cc" />
-    <ClCompile Include="drag_inducers.cc" />
-    <ClCompile Include="flight_log.cc" />
-    <ClCompile Include="globals.cc" />
-    <ClCompile Include="gui.cc" />
-    <ClCompile Include="logging.cc" />
-    <ClCompile Include="matrix.cc" />
-    <ClCompile Include="pid.cc" />
-    <ClCompile Include="rcr_util.cc" />
-    <ClCompile Include="rcr_util_unittests.cc" />
-    <ClCompile Include="vds_maths.cc" />
-    <ClCompile Include="vehicle.cc" />
+    <ClCompile Include="src\daq.cc" />
+    <ClCompile Include="src\drag_inducers.cc" />
+    <ClCompile Include="src\flight_log.cc" />
+    <ClCompile Include="src\globals.cc" />
+    <ClCompile Include="src\gui.cc" />
+    <ClCompile Include="src\logging.cc" />
+    <ClCompile Include="src\main.cc" />
+    <ClCompile Include="src\matrix.cc" />
+    <ClCompile Include="src\pid.cc" />
+    <ClCompile Include="src\rcr_util.cc" />
+    <ClCompile Include="src\rcr_util_unittests.cc" />
+    <ClCompile Include="src\requests.cc" />
+    <ClCompile Include="src\vds_maths.cc" />
+    <ClCompile Include="src\vehicle.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Adafruit_BMP280.h" />
-    <ClInclude Include="daq.hh" />
-    <ClInclude Include="drag_inducers.hh" />
-    <ClInclude Include="flight_log.hh" />
-    <ClInclude Include="globals.hh" />
-    <ClInclude Include="gui.hh" />
-    <ClInclude Include="logging.hh" />
-    <ClInclude Include="matrix.hh" />
-    <ClInclude Include="pid.hh" />
     <ClInclude Include="rcr_maths.h" />
-    <ClInclude Include="rcr_util.hh" />
-    <ClInclude Include="requests.hh" />
-    <ClInclude Include="state_log.hh" />
-    <ClInclude Include="vds.hh" />
-    <ClInclude Include="vds_maths.hh" />
-    <ClInclude Include="vehicle.hh" />
-    <ClInclude Include="vehicle_state.hh" />
+    <ClInclude Include="src\daq.hh" />
+    <ClInclude Include="src\drag_inducers.hh" />
+    <ClInclude Include="src\flight_log.hh" />
+    <ClInclude Include="src\globals.hh" />
+    <ClInclude Include="src\gui.hh" />
+    <ClInclude Include="src\logging.hh" />
+    <ClInclude Include="src\matrix.hh" />
+    <ClInclude Include="src\pid.hh" />
+    <ClInclude Include="src\rcr_util.hh" />
+    <ClInclude Include="src\requests.hh" />
+    <ClInclude Include="src\state_log.hh" />
+    <ClInclude Include="src\vds.hh" />
+    <ClInclude Include="src\vds_maths.hh" />
+    <ClInclude Include="src\vehicle.hh" />
+    <ClInclude Include="src\vehicle_state.hh" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>

@@ -1,8 +1,6 @@
 #ifndef _RCR_VDS_DAQ_HH_
 #define _RCR_VDS_DAQ_HH_
 
-#include "Adafruit_BMP280.h"
-#include <Adafruit_BNO055\Adafruit_BNO055.h>
 #include "globals.hh"
 #include "vehicle_state.hh"
 
@@ -16,8 +14,8 @@ class DaqController {
   bool getRawState(VehicleState* rawState, bool testMode);
 
  protected:
-  Adafruit_BNO055 bno{};
-  Adafruit_BMP280 bmp280{};
+  void* bno{};
+  void* bmp280{};
 	float padAlt;
 	bool timeOverflow = false;
 	float lastAlt;
