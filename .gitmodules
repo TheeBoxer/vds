@@ -4,3 +4,6 @@
 [submodule "googletest"]
 	path = googletest
 	url = https://github.com/google/googletest
+[submodule "cpp-mediator"]
+	path = cpp-mediator
+	url = https://github.com/nolanholden/cpp-mediator
