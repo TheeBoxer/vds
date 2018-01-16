@@ -24,7 +24,7 @@ class Gui {
 
 	void printMenu();
 
-	void flush_input();
+  void flush_input() {}
 
  protected:
 	void editRocket();

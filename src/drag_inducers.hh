@@ -1,21 +1,25 @@
 #ifndef _RCR_VDS_DRAGINDUCERS_HH_
 #define _RCR_VDS_DRAGINDUCERS_HH_
 
+#include <mediator.hpp>
 #include "pid.hh"
+
+using mediator = holden::mediator::mediator;
 
 namespace rcr {
 namespace vds {
 
 class DragInducers {
  public:
-  DragInducers() : motorPID(&encPos, &mtrSpdCmd, &encPosCmd, KP, KI, KD, KN, -255, 255) {}
+  DragInducers(mediator& m) : m_(m),
+    motorPID(&encPos, &mtrSpdCmd, &encPosCmd, KP, KI, KD, KN, -255, 255) {}
   void init();
   void dragBladesCheck();
   void powerTest();
   int airBrakesGoToEncPos(float vehVel, float sppVel);
-  void motorDo(bool direction, uint8_t speed);
+  void motorDo(BladeDirection direction, uint8_t speed);
   void motorDont();
-  bool motorGoTo(int16_t encCmd);
+  bool motorGoTo(int encCmd);
   void motorTest();
   void motorExercise();
 
@@ -27,12 +31,13 @@ class DragInducers {
   int encPosCmd = 0;
 
  private:
+  mediator& m_;
 	Pid motorPID;
 
   // motor speed command
   int mtrSpdCmd = 0;
 
-	void motorGoToPersistent(uint16_t goTo);
+	void motorGoToPersistent(int goTo);
 };
 
 extern DragInducers drag_inducers;

@@ -18,7 +18,7 @@ bool DaqController::getRawState(VehicleState* rawState, bool testMode) {
 	bool returnVal;
 	if (testMode) {                                                  //If file is in test mode, retrieve sensor data from data file with past flight data
 		if (!flight_log.readCSV(rawState)) {
-			Serial.println("end of flight");
+			out << "end of flight\n";
 			returnVal = false;
 		}
 		else {

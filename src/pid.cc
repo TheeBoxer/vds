@@ -58,17 +58,17 @@ void Pid::Compute() {
 	*myOutput = output;
 
 #if DEBUG_PIDCOMPUTE
-	Serial.println();
-	Serial.println("PID_COMPUTE--------------");
-	Serial.print("mtrSpdCmd: ");
+	out << "\n";
+	out << "PID_COMPUTE--------------\n";
+	out << "mtrSpdCmd: ";
 	Serial.println(output);
-	Serial.print("kp*error: ");
+	out << "kp*error: ";
 	Serial.println(kp*error);
-	Serial.print("Iterm: ");
+	out << "Iterm: ";
 	Serial.println(ITerm,5);
-	Serial.print("DTerm: ");
+	out << "DTerm: ";
 	Serial.println(DTerm);
-	Serial.print("dt: ");
+	out << "dt: ";
 	Serial.println(dt,5);
 #endif
 

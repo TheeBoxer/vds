@@ -1,7 +1,8 @@
 #include "drag_inducers.hh"
 
 #include "globals.hh"
-#include "rcr_maths.h"
+#include "limit_switches.hh"
+#include "../rcr_maths.h"
 #include "rcr_util.hh"
 
 #include <chrono>
@@ -13,15 +14,15 @@ namespace vds {
 
 void DragInducers::init() {
 	//setup motor pins
-	pinMode(MOTOR_A, OUTPUT);
-	pinMode(MOTOR_B, OUTPUT);
-	pinMode(MOTOR_PWM, OUTPUT);
+	pinMode(rcr::vds::digital_io::Pin::MOTOR_A, OUTPUT);
+	pinMode(rcr::vds::digital_io::Pin::MOTOR_B, OUTPUT);
+	pinMode(rcr::vds::digital_io::Pin::MOTOR_PWM, OUTPUT);
 	//setup encoder pins
-	pinMode(ENC_A, INPUT);
-	pinMode(ENC_B, INPUT);
+	pinMode(rcr::vds::digital_io::Pin::ENC_A, INPUT);
+	pinMode(rcr::vds::digital_io::Pin::ENC_B, INPUT);
 	//setup limit switch pins
-	pinMode(LIM_OUT, INPUT);
-	pinMode(LIM_IN, INPUT);
+	pinMode(rcr::vds::digital_io::Pin::LIM_OUT, INPUT);
+	pinMode(rcr::vds::digital_io::Pin::LIM_IN, INPUT);
 }
 
 /**************************************************************************/
@@ -31,17 +32,17 @@ Author: Ben
 */
 /**************************************************************************/
 void DragInducers::dragBladesCheck() {
-	Serial.println("\r\n-----Drag Blades Check----");	
-  Serial.print("encMin: ");
+	out << "\r\n-----Drag Blades Check----\n";	
+  out << "encMin: ";
   Serial.println(encMin);
-  Serial.print("encMax: ");
+  out << "encMax: ";
   Serial.println(encMax);
-  Serial.print("encPos: ");
+  out << "encPos: ";
   Serial.println(encPos);
-  Serial.print("Inner limit pressed : ");
-  Serial.println(!digitalRead(LIM_IN));
-  Serial.print("Outter limit pressed : ");
-  Serial.println(!digitalRead(LIM_OUT));
+  out << "Inner limit pressed : ";
+  Serial.println(!digitalRead(rcr::vds::digital_io::Pin::LIM_IN));
+  out << "Outter limit pressed : ";
+  Serial.println(!digitalRead(rcr::vds::digital_io::Pin::LIM_OUT));
 }
 
 /**************************************************************************/
@@ -57,7 +58,7 @@ int DragInducers::airBrakesGoToEncPos(float vehVel, float sppVel)
 	returnVal = -(sppVel - vehVel) * AIRBRAKES_GAIN;
 	if (returnVal >= 100) returnVal = 100;
 	else if (returnVal <= 0) returnVal = 0;
-	return (int)map((long)returnVal, 0, 100, encMin, encMax);
+	return (int)rcr::maths::map((long)returnVal, 0, 100, encMin, encMax);
 }
 
 /**************************************************************************/
@@ -67,42 +68,43 @@ Also ensures that the drag blades don't extend past their limits.
 Author: Ben
 */
 /**************************************************************************/
-void DragInducers::motorDo(bool direction, uint8_t speed) {
-	bool limit_in, limit_out;
-	int range;
-	if (direction) {
-		digitalWrite(MOTOR_A, HIGH);
-		digitalWrite(MOTOR_B, LOW);
+void DragInducers::motorDo(BladeDirection direction, uint8_t speed) {
+  bool fully_closed = m_.send(blades::limit_switches::IsInnerSwitchEnabled{}); 
+  bool fully_open = m_.send(blades::limit_switches::IsOuterSwitchEnabled{});
+
+	if (direction == BladeDirection::Out) {
+		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_A, kHigh);
+		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_B, kLow);
 	}
 	else {
-		digitalWrite(MOTOR_A, LOW);
-		digitalWrite(MOTOR_B, HIGH);
+		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_A, kLow);
+		digitalWrite(rcr::vds::digital_io::Pin::MOTOR_B, kHigh);
 	}
-	limit_in = digitalRead(LIM_IN);
-	limit_out = digitalRead(LIM_OUT);
-	flight_log.supStat.encPos = encPos;
-	flight_log.supStat.encPosCmd = encPosCmd;
-	flight_log.supStat.limit_in = limit_in;
-	flight_log.supStat.limit_out = limit_out;
-	flight_log.supStat.encMax = encMax;
-	flight_log.supStat.encMin = encMin;
-	flight_log.supStat.mtrSpdCmd = mtrSpdCmd;
-	if (!limit_in && (direction == INWARD)) {
-		analogWrite(MOTOR_PWM, 0);
-		range = std::abs(encMax - encMin);
+	
+	//flight_log.supStat.encPos = encPos;
+	//flight_log.supStat.encPosCmd = encPosCmd;
+	//flight_log.supStat.limit_in = fully_closed;
+	//flight_log.supStat.limit_out = fully_open;
+	//flight_log.supStat.encMax = encMax;
+	//flight_log.supStat.encMin = encMin;
+	//flight_log.supStat.mtrSpdCmd = mtrSpdCmd;
+
+	if (!fully_closed && (direction == BladeDirection::In)) {
+		analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, 0);
+		int range = std::abs(encMax - encMin);
 		encPos = 0;	
 		encMin = 0;
 		encMax = range;
 	}
-	else if (!limit_out && (direction == OUTWARD)) {
-		analogWrite(MOTOR_PWM, 0);
-		range = std::abs(encMax - encMin);
+	else if (!fully_open && (direction == BladeDirection::Out)) {
+		analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, 0);
+		int range = std::abs(encMax - encMin);
 		encPos = range;
 		encMin = 0;
 		encMax = range;
 	}
 	else {
-		analogWrite(MOTOR_PWM, speed);
+		analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, speed);
 	}
 	if ((encMax - encMin) < 9 * ENC_RANGE / 10) {
 		encMin = 0;
@@ -112,9 +114,9 @@ void DragInducers::motorDo(bool direction, uint8_t speed) {
 }
 
 void DragInducers::motorDont() {
-	digitalWrite(MOTOR_A, LOW);
-	digitalWrite(MOTOR_B, LOW);
-	analogWrite(MOTOR_PWM, 0);
+	digitalWrite(rcr::vds::digital_io::Pin::MOTOR_A, kLow);
+	digitalWrite(rcr::vds::digital_io::Pin::MOTOR_B, kLow);
+	analogWrite(rcr::vds::digital_io::Pin::MOTOR_PWM, 0);
 }
 
 /**************************************************************************/
@@ -126,7 +128,7 @@ their target for at least SETPOINT_INAROW succesive calls of motorGoTo()
 Author: Ben
 */
 /**************************************************************************/
-bool DragInducers::motorGoTo(int16_t goTo)
+bool DragInducers::motorGoTo(int goTo)
 {
 	static uint8_t count = 0;
 	encPosCmd = goTo;
@@ -143,13 +145,6 @@ bool DragInducers::motorGoTo(int16_t goTo)
 	else {
 		count = 0;
 	}
-#if DEBUG_MOTORGOTO
-	Serial.println("");
-	Serial.println("MOTORGOTO----------------");
-	Serial.printf("goTo: %d\r\n", goTo);
-	Serial.printf("count: %d\r\n", count);
-	dragBladesCheck();
-#endif
 	if (count >= SETPOINT_INAROW) {
 		count = 0;		
 		return true;
@@ -167,23 +162,22 @@ Then exercise motorGoTo by extending and retracting the blades in 1/4 turns
 Author: Ben
 */
 /**************************************************************************/
-void DragInducers::motorTest()
-{
+void DragInducers::motorTest() {
 	int timer = 0;
 	flight_log.sd.remove(MOTOR_FILENAME);                                 //Removes prior error file
 
 	File data = flight_log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
 	if (!data) {                                                    //If unable to be initiated, throw error statement.  Do nothing
-		Serial.println("Data file unable to initiated - motorTest");
+		out << "Data file unable to initiated - motorTest\n";
 		disk_initialized = false;
 		return;
 	}
 	else {                                             //Adds unique header depending on if VDS is in test or flight mode
-		data.println("times, encPos, encPosCmd, limit_out, limit_in, encMax, encMin, mtrSpdCmd");
+		data.println("times, encPos, encPosCmd, fully_open, fully_closed, encMax, encMin, mtrSpdCmd");
 		data.close();                                               //Closes data file after use.
 	}
 	timer = millis();
-	while (digitalRead(LIM_OUT)) {
+	while (digitalRead(rcr::vds::digital_io::Pin::LIM_OUT)) {
 		motorDo(OUTWARD, DEADZONE_MAX);
 		if ((Serial.available() > 0) || ((millis() - timer) >4000)) {
 			motorDont();
@@ -191,7 +185,7 @@ void DragInducers::motorTest()
 		}
 	}
 	timer = millis();
-	while (digitalRead(LIM_IN)) {
+	while (digitalRead(rcr::vds::digital_io::Pin::LIM_IN)) {
 		motorDo(INWARD, DEADZONE_MAX);
 		if ((Serial.available() > 0) || ((millis() - timer) >4000)) {
 			motorDont();
@@ -200,37 +194,51 @@ void DragInducers::motorTest()
 	}	
 	drag_inducers_initialized = true;
 
+  using namespace std::chrono_literals;
+  using rcr::util::sleep_for;
+  auto delay = 300ms;
+
 	motorGoToPersistent(0);
 	motorDont();
-	delay(300);
-	motorGoToPersistent(0);
-	motorGoToPersistent(25);
-	motorDont();
-	delay(300);
+  sleep_for(delay);
+
+  for (uint16_t percent = 0; percent < 100;) {
+    motorGoToPersistent(percent += 25);
+    motorGoToPersistent(percent);
+    motorDont();
+    sleep_for(delay);
+  }
+
+
+
 	motorGoToPersistent(25);
 	motorGoToPersistent(50);
 	motorDont();
-	delay(300);
+  sleep_for(delay);
 	motorGoToPersistent(50);
 	motorGoToPersistent(75);
 	motorDont();
-	delay(300);
+  sleep_for(delay);
 	motorGoToPersistent(75);
 	motorGoToPersistent(100);
 	motorDont();
-	delay(300);
+  sleep_for(delay);
+
 	motorGoToPersistent(100);
 	motorGoToPersistent(75);
 	motorDont();
-	delay(300);
+  sleep_for(delay);
+
 	motorGoToPersistent(75);
 	motorGoToPersistent(50);
 	motorDont();
-	delay(300);
+  sleep_for(delay);
+
 	motorGoToPersistent(50);
 	motorGoToPersistent(25);
 	motorDont();
-	delay(300);
+  sleep_for(delay);
+
 	motorGoToPersistent(25);
 	motorGoToPersistent(0);
 	motorDont();
@@ -272,7 +280,7 @@ void DragInducers::motorExercise()
 			dir = OUTWARD;
 			derp = (float)(t - 1000000) / 1000000;
 			spd = derp * 255;
-			//Serial.print("derp = ");
+			//out << "derp = ";
 			//Serial.println(derp);
 		}
 		else if (t < 3000000) {
@@ -287,7 +295,7 @@ void DragInducers::motorExercise()
 			dir = OUTWARD;
 			derp = (float)(t - 4000000) / 1000000;
 			spd = deadZoneSpeed + derp * (255 - deadZoneSpeed);
-			//Serial.print("derp = ");
+			//out << "derp = ";
 			//Serial.println(derp);
 		}
 		else if (t < 6000000) {
@@ -299,7 +307,7 @@ void DragInducers::motorExercise()
 			spd = 0;
 		}
 		//Serial.print(t);
-		//Serial.print(",\t");
+		//out << ",\t";
 		//Serial.println(spd);
 		drag_inducers.motorDo(dir, spd);
 		myFile.printf("%lu,%u,%d,%d", t, spd, dir, drag_inducers.encPos);
@@ -370,15 +378,8 @@ Also records data on the sd card.
 Author: Ben
 */
 /**************************************************************************/
-void DragInducers::motorGoToPersistent(uint16_t goToPercent) {
-	File data = flight_log.sd.open(MOTOR_FILENAME, FILE_WRITE);       //Creates new data file
+void DragInducers::motorGoToPersistent(int goToPercent) {
 	while (!motorGoTo(rcr::maths::map(goToPercent, 0, 100, encMin, encMax))) {
-		data.open(MOTOR_FILENAME, FILE_WRITE);
-		if (data) {
-			data.printf("%lu,%d,%d,%d,%d,%d,%d,%d", millis(), encPos, encPosCmd, flight_log.supStat.limit_out, flight_log.supStat.limit_in, flight_log.supStat.encMax, flight_log.supStat.encMin, flight_log.supStat.mtrSpdCmd);
-			data.println("");
-			data.close();
-		}
 		rcr::util::sleep_for(kMotorTestDelay);
 	}
 }

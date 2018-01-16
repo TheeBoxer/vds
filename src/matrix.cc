@@ -18,14 +18,14 @@ namespace vds {
 void MatrixMath::Print(float* A, int m, int n, String label) {
 	// A = input matrix (m x n)
 	int i, j;
-	Serial.println();
+	out << "\n";
 	Serial.println(label);
 	for (i = 0; i<m; i++) {
 		for (j = 0; j<n; j++) {
 			Serial.print(A[n*i + j]);
-			Serial.print("\t");
+			out << "\t";
 		}
-		Serial.println();
+		out << "\n";
 	}
 }
 
@@ -143,7 +143,7 @@ int MatrixMath::Invert(float* A, int n)
 		// check for singular matrix
 		if (A[pivrow*n + k] == 0.0f)
 		{
-			Serial.println("Inversion failed due to singular matrix");
+			out << "Inversion failed due to singular matrix\n";
 			return 0;
 		}
 

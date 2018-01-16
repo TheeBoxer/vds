@@ -7,6 +7,9 @@
 namespace rcr {
 namespace vds {
 
+constexpr short kLow = 0;
+constexpr short kHigh = 1;
+
 #define DEBUG_EMERGENCY			false				//toggles print statements that are super detailed
 #define DEBUG_FLIGHTMODE		false
 #define DEBUG_KALMAN			false
@@ -59,20 +62,13 @@ namespace vds {
 #define RHO					1.18
 #define G					9.81
 
-//pins
-#define LED			13
-#define MOTOR_A		2//4
-#define MOTOR_B		3//5
-#define MOTOR_PWM	6//8
-#define ENC_A		4//6
-#define ENC_B		5//7
-#define LIM_IN		23
-#define LIM_OUT		22
-#define LIM_3v3		21
-
 //motor stuff
-#define OUTWARD				true
-#define INWARD				false
+enum class BladeDirection {
+  In,
+  Out,
+};
+#define OUTWARD				BladeDirection::Out
+#define INWARD				BladeDirection::In
 #define SETPOINT_TOLERANCE	3
 #define SETPOINT_INAROW		8
 #define MOTORTEST_DELAY_MS  15

@@ -1,5 +1,11 @@
 #include "gui.hh"
 
+#include "globals.hh"
+#include "rcr_util.hh"
+
+#include <math.h>
+#include <string>
+
 namespace rcr {
 namespace vds {
 
@@ -10,10 +16,10 @@ Author: Ben
 */
 /**************************************************************************/
 void Gui::init() {
-	Serial.println("\r\n---Initializing rocket settings---");
+	out << "\r\n---Initializing rocket settings---\n";
 	currentRocket = readUint8_t(3 * ROCKETSTRUCT_STORSIZE);
 	if ((currentRocket > 3) || (currentRocket < 1) || isnan(currentRocket)) {
-		Serial.println("An incompatible rocket ID # was found on the EEPROM\r\nIs it possible that this is a new Teensy?\r\nSetting rocket ID # to 1\r\n");
+		out << "An incompatible rocket ID # was found on the EEPROM\r\nIs it possible that this is a new Teensy?\r\nSetting rocket ID # to 1\r\n\n";
 		currentRocket = 1;
 		writeUint8_t(currentRocket, 3 * ROCKETSTRUCT_STORSIZE);
 	}
@@ -27,19 +33,19 @@ Author: Jacob
 */
 /**************************************************************************/
 void Gui::printState(VehicleState state, int label) {
-  Serial.println();
-	Serial.println(label);
-	Serial.print(") alt = ");
-	Serial.print(state.alt, 4);
-	Serial.print(", vel = ");
-	Serial.print(state.vel, 4);
-	Serial.print(", accel = ");
-	Serial.print(state.accel, 4);
-	Serial.print(", time = ");
-	Serial.print(state.time);
-	Serial.print(", buff_t = ");
-	Serial.print(state.buff_t, 4);
-	Serial.println(");");
+  out << "\n";
+  out << label;
+	out << ") alt = ";
+  out << state.alt;
+	out << ", vel = ";
+  out << state.vel;
+	out << ", accel = ";
+  out << state.accel;
+	out << ", time = ";
+  out << state.time;
+	out << ", buff_t = ";
+  out << state.buff_t;
+	out << ");\n";
 }
 
 
@@ -50,15 +56,15 @@ void Gui::printState(VehicleState state, int label) {
   */
   /**************************************************************************/
 void Gui::printState(VehicleState state, const char* label) {
-  Serial.println();
-	Serial.println(label);
-	Serial.print("alt =   ");
+  out << "\n";
+  out << label;
+	out << "alt =   ";
 	Serial.println(state.alt, 3);
-	Serial.print("vel =   ");
+	out << "vel =   ";
 	Serial.println(state.vel, 4);
-	Serial.print("accel = ");
+	out << "accel = ";
 	Serial.println(state.accel, 3);
-	Serial.print("t =     ");
+	out << "t =     ";
 	Serial.println(state.time, 6);
 }
 
@@ -83,34 +89,7 @@ void Gui::printPastStates(VehicleState* states) {
   */
   /**************************************************************************/
 void Gui::printTitle() {
-  //remember backslahses have to be double backslashed to print correctly
-  Serial.println(F("             __      _______   _____  __      _____    __ "));
-  delay(100);
-  Serial.println(F("             \\ \\    / /  __ \\ / ____| \\ \\    / /__ \\   /_ |"));
-  delay(100);
-  Serial.println(F("              \\ \\  / /| |  | | (___    \\ \\  / /   ) |   | |"));
-  delay(100);
-  Serial.println(F("               \\ \\/ / | |  | |\\___ \\    \\ \\/ /   / /    | |"));
-  delay(100);
-  Serial.println(F("                \\  /  | |__| |____) |    \\  /   / /_   _| |"));
-  delay(100);
-  Serial.println(F("                 \\/   |_____/|_____/      \\/   |____| (_)_|"));
-  delay(100);
-  Serial.println("");
-  Serial.println("             River City Rocketry's Variable Drag System");
-  delay(100);
-  Serial.println(" \t\t\t Full Scale Test Flights");
-  delay(200);
-  Serial.print(F("Software written by Jacob Cassady, "));
-  delay(100);
-  Serial.println(F("Ben Stringer, Lydia Sharp, and Denny Joy."));
-  delay(100);
-  Serial.println(F("With help from libraries written by Adafruit Industries."));
-  delay(100);
-  Serial.println(F("Mechanical hardware developed by Justin Johnson."));
-  delay(100);
-  Serial.println(F("Electrical hardware developed by Kenny Dang, Kristian Meyer, and Alora Mazarakis."));
-  Serial.println("");
+  out << "| VARIABLE DRAG SYSTEM |";
 }
 
 
@@ -121,35 +100,30 @@ void Gui::printTitle() {
   */
   /**************************************************************************/
 void Gui::printMenu() {
-  Serial.println("BMP:");
-  Serial.println(report(bmp_initialized));
-  Serial.println("BNO:");
-  Serial.println(report(bno_initialized));
-	Serial.println("SD:");
-  Serial.println(report(disk_initialized));
-	Serial.println("Drag Inducers:");
-  Serial.println(report(drag_inducers_initialized));
+  out << "BMP:\n";
+  out << report(bmp_initialized);
+  out << "BNO:\n";
+  out << report(bno_initialized);
+	out << "SD:\n";
+  out << report(disk_initialized);
+	out << "Drag Inducers:\n";
+  out << report(drag_inducers_initialized);
 
 #if LIMITSWITCHES_DETATCHED
-	Serial.println("WARNING! LIMITSWITCHES_DETATCHED MODE IS ON!");
+	out << "WARNING! LIMITSWITCHES_DETATCHED MODE IS ON!\n";
 #endif
 	delay(50);
-	Serial.println("\n--------- Menu -----------;");
-	Serial.println("'S' - (S)ystem Check");
-	Serial.println("'D' - (D)rag Blades Check");
-	Serial.println("'C' - (C)alibrate BNO055");
-	Serial.println("'R' - Edit (R)ockets");
-	Serial.println("'I' - Inch (I)nward");
-	Serial.println("'O' - Inch (O)utward");
-	Serial.println("'A' - (A)ccelerometer Test");
-	Serial.println("'B' - (B)arometric Pressure Sensor Test");
-	Serial.println("'M' - (M)otor Calibration & Test");
-	Serial.println("'F' - (F)light Mode");
-}
-
-
-void Gui::flush_input() {
-	while (Serial.available()) Serial.read();
+	out << "\n--------- Menu -----------;\n";
+	out << "'S' - (S)ystem Check\n";
+	out << "'D' - (D)rag Blades Check\n";
+	out << "'C' - (C)alibrate BNO055\n";
+	out << "'R' - Edit (R)ockets\n";
+	out << "'I' - Inch (I)nward\n";
+	out << "'O' - Inch (O)utward\n";
+	out << "'A' - (A)ccelerometer Test\n";
+	out << "'B' - (B)arometric Pressure Sensor Test\n";
+	out << "'M' - (M)otor Calibration & Test\n";
+	out << "'F' - (F)light Mode\n";
 }
 
 /**************************************************************************/
@@ -190,7 +164,7 @@ bool Gui::loadRocket(uint8_t whichOne) {
 		return true;
 	}
 	else {
-		Serial.println("WARNING: NON-NOMINAL VALUES DETECTED IN ROCKET SETTINGS");
+		out << "WARNING: NON-NOMINAL VALUES DETECTED IN ROCKET SETTINGS\n";
 		return false;
 	}
 }
@@ -222,7 +196,7 @@ Author: Ben
 */
 /**************************************************************************/
 void Gui::printRocket() {
-	//Serial.print("Selected Vehicle = ");
+	//out << "Selected Vehicle = ";
 	//Serial.println(vehicle.name);
 	//delay(50);
 	//Serial.println("Selected Vehicle # = %d\r\n", currentRocket);
@@ -267,15 +241,15 @@ void Gui::rocketMenu() {
 				loadRocket(currentRocket);
 				break;
 			case 's'://switch rockets
-				Serial.println("------Switch Rockets-----");
-				Serial.println("Type a number 1-3");
+				out << "------Switch Rockets-----\n";
+				out << "Type a number 1-3\n";
         rcr::util::clear_input(Serial);
 				while (!Serial.available()) {
 					//wait
 				}
 				tempVar = Serial.parseInt();
 				if ((tempVar > 3) || (tempVar < 1)) {
-					Serial.println(" Type a number between 1 & 3");
+					out << " Type a number between 1 & 3\n";
 				}
 				else {
 					currentRocket = tempVar;
@@ -288,7 +262,7 @@ void Gui::rocketMenu() {
 				return;
 				break;
 			default:
-				Serial.println("unknown code received - rocket submenu");
+				out << "unknown code received - rocket submenu\n";
 				break;
 			}
       rcr::util::clear_input(Serial);
@@ -306,18 +280,19 @@ Author: Ben
 void Gui::editRocket() {
 	int eqlIndex;
 	String myVariable;
-	Serial.println("------Editing Rockets------");
+	out << "------Editing Rockets------\n";
 	printRocket();
-	Serial.println("Enter the variable you want to change in the following format:\r\nvariableName=value;\r\n");
-	rcr::util::clear_input(Serial);
-	while (!Serial.available()) {}
+	out << "Enter the variable you want to change in the following format:\r\nvariableName=value;\r\n\n";
+	rcr::util::clear_input(out);
+  std::string input;
+  in >> input;
 
   String myString = Serial.readStringUntil(';');
-	Serial.print("String received: ");
+	out << "String received: ";
 	Serial.println(myString);
 	eqlIndex = myString.indexOf('=');
 	myVariable = myString.substring(0, eqlIndex);
-	Serial.print("variable parsed: ");
+	out << "variable parsed: ";
 	Serial.println(myVariable);
 	if (myVariable.equals("dryMass")) {
 		vehicle.dryMass = myString.substring(eqlIndex + 1).toFloat();
@@ -351,7 +326,7 @@ void Gui::editRocket() {
 		Serial.println(vehicle.name);
 	}
 	else {
-		Serial.println("Bad string received");
+		out << "Bad string received\n";
 	}
 }
 
@@ -362,13 +337,13 @@ Author: Ben
 */
 /**************************************************************************/
 void Gui::printRocketMenu() {
-	Serial.println("\r\n------Rocket SubMenu-------\r\n");
+	out << "\r\n------Rocket SubMenu-------\r\n\n";
 	delay(100);
-	Serial.println("'e' - (e)dit rockets");
+	out << "'e' - (e)dit rockets\n";
 	delay(100);
-	Serial.println("'s' - (s)witch rockets");
+	out << "'s' - (s)witch rockets\n";
 	delay(100);
-	Serial.println("'x' - e(x)it rocket submenu");
+	out << "'x' - e(x)it rocket submenu\n";
 }
 
 /**************************************************************************/

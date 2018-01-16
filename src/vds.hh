@@ -29,55 +29,55 @@ namespace {
   void d() { ::rcr::vds::drag_inducers.dragBladesCheck(); }
   void f(bool &test_mode, bool &fullBrakesTest) {
     rcr::util::clear_input(Serial);
-    Serial.println("------Choose Flight Mode Settings-----");
+    out << "------Choose Flight Mode Settings-----\n";
 
-    Serial.println("test mode?");
+    out << "test mode?\n";
     {
       auto auth = rcr::util::get_authorization(Serial);
       ::rcr::vds::flight_log.newFlight(auth);
       test_mode = auth;
     }
 
-    Serial.println("full-brake test mode?");
+    out << "full-brake test mode?\n";
     fullBrakesTest = rcr::util::get_authorization(Serial);
 
     if (!test_mode) {
       for (auto& initialized : must_be_initialized) {
         if (!*initialized && !test_mode) {
-          Serial.println("Cannot enter flight mode. A sensor or sd card is not initialized.");
+          out << "Cannot enter flight mode. A sensor or sd card is not initialized.\n";
           ::rcr::vds::flight_log.logError(SENSOR_UNIT);
           return;
         }
       }
     }
 
-    Serial.println("entering flight mode");
-    Serial.print("Test Mode: ");
+    out << "entering flight mode\n";
+    out << "Test Mode: ";
     Serial.println(test_mode ? "ON" : "OFF");
-    Serial.print("Full-brakes Test: ");
+    out << "Full-brakes Test: ";
     Serial.println(fullBrakesTest ? "ON" : "OFF");
 
     if (!test_mode) ::rcr::vds::daq_controller.setPadAlt();
     flightMode(test_mode, fullBrakesTest);
   }
   void i() {
-    Serial.println("Inching Inward");
+    out << "Inching Inward\n";
     ::rcr::vds::drag_inducers.motorDo(INWARD, DEADZONE_MAX + 15);
     ::rcr::vds::drag_inducers.motorDont();
   }
   void m() {
     rcr::util::clear_input(Serial);
-    Serial.println("\n\n----- Calibrate Motor -----;");
+    out << "\n\n----- Calibrate Motor -----;\n";
     ::rcr::vds::drag_inducers.motorTest();
   }
   void o() {
-    Serial.println("Inching Outward");
+    out << "Inching Outward\n";
     ::rcr::vds::drag_inducers.motorDo(OUTWARD, DEADZONE_MAX + 15);
     delay(250);
     ::rcr::vds::drag_inducers.motorDont();
   }
   void p() {
-    Serial.println("Power test");
+    out << "Power test\n";
     rcr::util::clear_input(Serial);
     ::rcr::vds::drag_inducers.powerTest();
     ::rcr::vds::drag_inducers.motorDont();
@@ -93,7 +93,7 @@ namespace {
     ::rcr::vds::drag_inducers.dragBladesCheck();
   }
   void switch_default() {
-    Serial.println("Unkown code received - main menu");
+    out << "Unkown code received - main menu\n";
     ::rcr::vds::flight_log.logError(INVALID_MENU);
   }
 
@@ -106,7 +106,7 @@ namespace {
   void flightMode(bool testMode, bool fullBrakesTest) {
     VehicleState rawState{}, filteredState{};
     int airBrakesEncPos_val = 0;
-    Serial.println("asdfasdf");
+    out << "asdfasdf\n";
     rcr::util::clear_input(Serial);
     while ((Serial.available() == 0) && daq_controller.getRawState(&rawState, testMode)) {
       auto vSPP_val = rcr::vds::maths::spp_velocity(rawState.alt, rawState.vel);
@@ -132,32 +132,32 @@ namespace {
       }
       else {
         if ((rawState.accel < 0) && (rawState.alt > 150) && (rawState.vel > 0)) {
-          ::rcr::vds::drag_inducers.motorGoTo(::rcr::vds::drag_inducers.encMax);
+          rcr::vds::drag_inducers.motorGoTo(rcr::vds::drag_inducers.encMax);
         }
         else {
           drag_inducers.motorGoTo(drag_inducers.encMin);
         }
       }
     }
-    Serial.println("End of flight mode. Returning drag blades...");
+    out << "End of flight mode. Returning drag blades...\n";
     rcr::util::clear_input(Serial);
-    while (digitalRead(LIM_IN) && (Serial.available() == 0)) {
-      delay(MOTORTEST_DELAY_MS);
+    while (digitalRead(rcr::vds::digital_io::Pin::LIM_IN) && (Serial.available() == 0)) {
+      rcr::util::sleep_for(kMotorTestDelay);
       drag_inducers.motorDo(INWARD, DEADZONE_MAX + 10);
     }
     drag_inducers.motorDont();
   }
 
-  // This is an ISR! it is called when the pin belonging to ENC_A sees a rising 
+  // This is an ISR! it is called when the pin belonging to rcr::vds::digital_io::Pin::ENC_A sees a rising 
   // edge. This functions purpose is to keep track of the encoder's position.
   // Author: Jacob & Ben
   void doEncoder() {
     // If pinA and pinB are both high or both low, it is spinning forward. If 
     // they're different, it's going backward.
-    if (digitalRead(ENC_A) == digitalRead(ENC_B))
-      --::rcr::vds::drag_inducers.encPos;
+    if (digitalRead(rcr::vds::digital_io::Pin::ENC_A) == digitalRead(rcr::vds::digital_io::Pin::ENC_B))
+      --rcr::vds::drag_inducers.encPos;
     else
-      ++::rcr::vds::drag_inducers.encPos;
+      ++rcr::vds::drag_inducers.encPos;
   }
 } // namespace
 
@@ -165,10 +165,8 @@ inline void
 setup() {
 	bool begin = false;
 
-	Serial.begin(38400);
-
-  Serial.println("Welcome to VDS");
-  Serial.println("Press 's' to start");
+  out << "Welcome to VDS\n";
+  out << "Press 's' to start\n";
 
 	while (!begin)
 		if (Serial.available() > 0)
@@ -179,11 +177,11 @@ setup() {
   gui.printTitle();
 
   gui.init();
-  ::rcr::vds::flight_log.init();
-  ::rcr::vds::daq_controller.init(true);
-  ::rcr::vds::drag_inducers.init();
+  rcr::vds::flight_log.init();
+  rcr::vds::daq_controller.init(true);
+  rcr::vds::drag_inducers.init();
 
-	attachInterrupt(digitalPinToInterrupt(ENC_A), doEncoder, RISING);
+	attachInterrupt(digitalPinToInterrupt(rcr::vds::digital_io::Pin::ENC_A), doEncoder, RISING);
   ::rcr::vds::drag_inducers.dragBladesCheck();
   gui.printMenu();
 }
@@ -219,11 +217,11 @@ loop() {
         break;
       }
       case 'C': {
-        Serial.println("\n\n----- Calibrate BNO055 -----;");
+        out << "\n\n----- Calibrate BNO055 -----;\n";
         break;
       }
       case 'A': {
-        Serial.println("\n\n----- Testing Accelerometer -----;");
+        out << "\n\n----- Testing Accelerometer -----;\n";
         break;
       }
       case 'M': {
@@ -231,7 +229,7 @@ loop() {
         break;
       }
       case 'B': {
-        Serial.println("\n\n----- Testing Barometric Pressure Sensor -----;");
+        out << "\n\n----- Testing Barometric Pressure Sensor -----;\n";
         break;
       }
 		  case 'F': {

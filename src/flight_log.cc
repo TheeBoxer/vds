@@ -15,9 +15,9 @@ bool FlightLog::init() {
     initialized = true;
 	}
 	else {
-		Serial.print("Couldn't open test file, ");
+		out << "Couldn't open test file, ";
 		Serial.print(TEST_FILENAME);
-		Serial.println(" to determine its size.");
+		out << " to determine its size.\n";
 	}
 
   return initialized;
@@ -46,7 +46,7 @@ bool FlightLog::readCSV(VehicleState* destination) {
 	File myFile = sd.open(TEST_FILENAME, FILE_READ);
 	float time, alt, accel;
 	bool returnVal;
-	Serial.println("Asdf");
+	out << "Asdf\n";
 	if (myFile && myFile.available()) {
 		myFile.seek(pos);
 		time = myFile.parseFloat();
@@ -66,20 +66,20 @@ bool FlightLog::readCSV(VehicleState* destination) {
 		else {
 			returnVal = true;
 		}
-			Serial.println("");
-			Serial.println("READCSV---------------------");
-			Serial.print("position = ");
+			out << "\n";
+			out << "READCSV---------------------\n";
+			out << "position = ";
 			Serial.println(pos);
-			Serial.print("time = ");
+			out << "time = ";
 			Serial.print(time, 4);
-			Serial.println(" [sec]");
-			Serial.print("altitude = ");
+			out << " [sec]\n";
+			out << "altitude = ";
 			Serial.println(alt, 4);
-			Serial.print("acceleration = ");
+			out << "acceleration = ";
 			Serial.println(accel, 4);
 	}
 	else {
-		Serial.print("error opening the text file within readCSV()!");
+		out << "error opening the text file within readCSV()!";
 		logError(E_FILE_TEST);
 		return false;
 	}
@@ -104,7 +104,7 @@ void FlightLog::logError(Real message) {
 		myFile.println("");
 	}
 	else {
-		Serial.print("Unable to open error file");
+		out << "Unable to open error file";
 	}
 	myFile.close();
 }
@@ -121,7 +121,7 @@ void FlightLog::newFlight(bool testMode) {
 
 	File data = sd.open(LOG_FILENAME, FILE_WRITE);       //Creates new data file
 	if (!data) {                                                    //If unable to be initiated, throw error statement.  Do nothing
-		Serial.println("Data file unable to initiated.;");
+		out << "Data file unable to initiated.;\n";
 		disk_initialized = false;
 	}
 	else {
@@ -136,7 +136,7 @@ void FlightLog::newFlight(bool testMode) {
 
 	data = sd.open(ERROR_FILENAME, FILE_WRITE);                //Creates new error file
 	if (!data) {                                                    //If unable to be initiated, throw error statement.  Do nothing
-		Serial.println("Data file unable to initiated.;");
+		out << "Data file unable to initiated.;\n";
 		disk_initialized = false;
 	}
 	else {
