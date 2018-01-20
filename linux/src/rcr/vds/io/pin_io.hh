@@ -1,5 +1,5 @@
-#ifndef _RCR_DIGITALIO_HH_
-#define _RCR_DIGITALIO_HH_
+#ifndef _RCR_VDS_IO_PINIO_HH_
+#define _RCR_VDS_IO_PINIO_HH_
 
 #include <mediator.hpp>
 
@@ -72,4 +72,4 @@ class DigitalIoHandler
 } // namespace vds
 } // namespace rcr
 
-#endif // _RCR_DIGITALIO_HH_
+#endif // _RCR_VDS_IO_PINIO_HH_

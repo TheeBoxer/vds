@@ -1,5 +1,5 @@
-#ifndef _RCR_LIMITSWITCHES_HH_
-#define _RCR_LIMITSWITCHES_HH_
+#ifndef _RCR_VDS_BLADES_LIMITSWITCHES_HH_
+#define _RCR_VDS_BLADES_LIMITSWITCHES_HH_
 
 #include <mediator.hpp>
 
@@ -34,4 +34,4 @@ class LimitSwitchHandler
 } // namespace vds
 } // namespace rcr
 
-#endif // _RCR_LIMITSWITCHES_HH_
+#endif // _RCR_VDS_BLADES_LIMITSWITCHES_HH_
