@@ -1,12 +1,12 @@
 [submodule "fruit"]
-	path = fruit
+	path = linux/lib/fruit
 	url = https://github.com/google/fruit
 [submodule "googletest"]
-	path = googletest
+	path = linux/lib/googletest
 	url = https://github.com/google/googletest
 [submodule "cpp-mediator"]
-	path = cpp-mediator
+	path = linux/lib/cpp-mediator
 	url = https://github.com/nolanholden/cpp-mediator
 [submodule "vectornav-firmware"]
-	path = vectornav-firmware
+	path = linux/lib/vectornav-firmware
 	url = https://github.com/nolanholden/vectornav-firmware
