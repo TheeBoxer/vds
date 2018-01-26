@@ -7,6 +7,4 @@
 [submodule "linux/lib/cpp-mediator"]
 	path = linux/lib/cpp-mediator
 	url = https://github.com/nolanholden/cpp-mediator
-[submodule "linux/lib/vectornav-firmware"]
-	path = linux/lib/vectornav-firmware
-	url = https://github.com/nolanholden/vectornav-firmware
+
