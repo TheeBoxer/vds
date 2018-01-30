@@ -1,3 +1,102 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="src\rcr\rcr_util.hh">
+      <Filter>rcr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\rcr_maths.h">
+      <Filter>rcr\maths</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\daq.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\drag_inducers.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\flight_log.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\globals.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\gui.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\pid.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\state_log.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\vds.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\vds_maths.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\vehicle.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\vehicle_state.hh">
+      <Filter>rcr\vds</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\io\pin_io.hh">
+      <Filter>rcr\vds\io</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rcr\vds\blades\limit_switches.hh">
+      <Filter>rcr\vds\blades</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="rcr">
+      <UniqueIdentifier>{f25fc387-9a53-4931-b11f-3206872c3609}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcr\vds">
+      <UniqueIdentifier>{5821b232-9eb9-47d9-a438-8f161927e0fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcr\maths">
+      <UniqueIdentifier>{f4127ca6-ab1a-49c5-a7dd-168e238f0a98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcr\vds\io">
+      <UniqueIdentifier>{eeec3222-deca-4097-bc61-a42f8a0757ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rcr\vds\blades">
+      <UniqueIdentifier>{4d4abdf6-728a-46f2-a5d3-95bde1ca7712}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\rcr\rcr_util.cc">
+      <Filter>rcr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\daq.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\drag_inducers.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\flight_log.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\globals.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\gui.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\main.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\pid.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\vds_maths.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\vehicle.cc">
+      <Filter>rcr\vds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rcr\vds\io\pin_io.cc">
+      <Filter>rcr\vds\io</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
