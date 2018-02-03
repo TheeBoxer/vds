@@ -11,3 +11,9 @@
 [submodule "linux/lib/vectornav-firmware-1.1"]
 	path = linux/lib/vectornav-firmware-1.1
 	url = https://github.com/nolanholden/vectornav-firmware-1.1
+[submodule "linux/lib/bbb"]
+	path = linux/lib/bbb
+	url = https://github.com/petermancuso/bbb
+[submodule "linux/lib/BlackLib"]
+	path = linux/lib/BlackLib
+	url = https://github.com/yigityuce/BlackLib
