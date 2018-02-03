@@ -16,13 +16,13 @@ enum class LimitSwitch {
 class LimitSwitchHandler;
 
 struct IsInnerSwitchEnabled
-  : public holden::mediator::request<bool, LimitSwitchHandler> {};
+  : public holden::request<bool, LimitSwitchHandler> {};
 struct IsOuterSwitchEnabled
-  : public holden::mediator::request<bool, LimitSwitchHandler> {};
+  : public holden::request<bool, LimitSwitchHandler> {};
 
 class LimitSwitchHandler
-  : public holden::mediator::request_handler<IsInnerSwitchEnabled>
-  , public holden::mediator::request_handler<IsOuterSwitchEnabled> {
+  : public holden::request_handler<IsInnerSwitchEnabled>
+  , public holden::request_handler<IsOuterSwitchEnabled> {
  public:
   // TODO: implement these (was digitalRead(rcr::vds::io::Pin::LimitIn);)
   bool handle(const IsOuterSwitchEnabled& m) { return true; }

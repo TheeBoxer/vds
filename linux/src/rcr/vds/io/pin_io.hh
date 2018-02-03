@@ -36,14 +36,14 @@ namespace analog {
 
 class AnalogIoHandler;
 struct AnalogWrite
-  : public holden::mediator::request<void, AnalogIoHandler> {
+  : public holden::request<void, AnalogIoHandler> {
   AnalogWrite(Pin p, uint8_t value) : pin(p), value(value) {}
   Pin pin;
   uint8_t value;
 };
 
 class AnalogIoHandler
-  : public holden::mediator::request_handler<AnalogWrite> {
+  : public holden::request_handler<AnalogWrite> {
  public:
   void handle(const AnalogWrite& m);
 };
@@ -54,14 +54,14 @@ namespace digital {
 
 class DigitalIoHandler;
 struct DigitalWrite
-  : public holden::mediator::request<void, DigitalIoHandler> {
+  : public holden::request<void, DigitalIoHandler> {
   DigitalWrite(Pin p, bool value) : pin(p), value(value) {}
   Pin pin;
   bool value;
 };
 
 class DigitalIoHandler
-  : public holden::mediator::request_handler<DigitalWrite> {
+  : public holden::request_handler<DigitalWrite> {
  public:
   void handle(const DigitalWrite& m);
 };

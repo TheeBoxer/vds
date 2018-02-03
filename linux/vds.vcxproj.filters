@@ -7,39 +7,6 @@
     <ClInclude Include="src\rcr\rcr_maths.h">
       <Filter>rcr\maths</Filter>
     </ClInclude>
-    <ClInclude Include="src\rcr\vds\daq.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\drag_inducers.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\flight_log.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\globals.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\gui.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\pid.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\state_log.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\vds.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\vds_maths.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\vehicle.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rcr\vds\vehicle_state.hh">
-      <Filter>rcr\vds</Filter>
-    </ClInclude>
     <ClInclude Include="src\rcr\vds\io\pin_io.hh">
       <Filter>rcr\vds\io</Filter>
     </ClInclude>
@@ -67,33 +34,6 @@
   <ItemGroup>
     <ClCompile Include="src\rcr\rcr_util.cc">
       <Filter>rcr</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\daq.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\drag_inducers.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\flight_log.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\globals.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\gui.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\main.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\pid.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\vds_maths.cc">
-      <Filter>rcr\vds</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rcr\vds\vehicle.cc">
-      <Filter>rcr\vds</Filter>
     </ClCompile>
     <ClCompile Include="src\rcr\vds\io\pin_io.cc">
       <Filter>rcr\vds\io</Filter>
