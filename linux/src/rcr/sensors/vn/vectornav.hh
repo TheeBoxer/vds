@@ -84,7 +84,7 @@ class VectorNavHandler
     char rxbuf[(char)0x100];
     size_t bufcmdsize;
     size_t responseSize;
-    vec3f ypr;
+    vec3f vec3f_;
     char strConversions[50];
     size_t i;
 
@@ -126,10 +126,10 @@ class VectorNavHandler
     /* Now parse the received response. */
     if (VnSpi_parseYawPitchRoll(
       rxbuf,
-      &ypr) != E_NONE)
+      &vec3f_) != E_NONE)
       PUBLISH(0, "Error parsing yaw, pitch, roll.");
 
-    str_vec3f(strConversions, ypr);
+    str_vec3f(strConversions, vec3f_);
     printf("Current YPR: %s\n", strConversions);
 
     /* We have now shown how to process one full command transaction which
@@ -153,10 +153,10 @@ class VectorNavHandler
       * have valid data and can print/use the results. */
       if (VnSpi_parseYawPitchRoll(
         rxbuf,
-        &ypr) != E_NONE)
+        &vec3f_) != E_NONE)
         PUBLISH(0, "Error parsing yaw, pitch, roll.");
 
-      str_vec3f(strConversions, ypr);
+      str_vec3f(strConversions, vec3f_);
       printf("Current YPR: %s\n", strConversions);
     }
 
@@ -220,8 +220,8 @@ class VectorNavHandler
   // // use only transiently.
   // // not thread safe.
   // ImuMeasurementsRegister imu_data_{};
-  // vec3f vec3f_{};
-  // vec4f vec4f_{};
+  vec3f vec3f_{};
+  vec4f vec4f_{};
 };
 
 } // namespace vn
