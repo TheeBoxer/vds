@@ -28,12 +28,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rcr\rcr_maths.h" />
-    <ClInclude Include="src\rcr\rcr_util.hh" />
+    <ClInclude Include="src\rcr\sensors\vn\vectornav.hh" />
+    <ClInclude Include="src\rcr\util\publish.h" />
     <ClInclude Include="src\rcr\vds\blades\limit_switches.hh" />
     <ClInclude Include="src\rcr\vds\io\pin_io.hh" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\rcr\rcr_util.cc" />
     <ClCompile Include="src\rcr\vds\io\pin_io.cc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -72,8 +72,14 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>C:\Users\me\OneDrive\dev\vds\linux\lib\vectornav-firmware-1.1\cpp\include;C:\Users\me\OneDrive\dev\vds\linux\lib\googletest\googletest\include;C:\Users\me\OneDrive\dev\vds\linux\lib\fruit\include;C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include;C:\Users\me\OneDrive\dev\vds\linux\lib\BlackLib\v3_0;C:\Users\me\OneDrive\dev\vds\linux\lib\bbb\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\me\OneDrive\dev\vds\fruit\include;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\me\OneDrive\dev\vds\linux\lib\BlackLib\v3_0;C:\Users\me\OneDrive\dev\vds\linux\lib\vectornav-firmware-1.1\c\include;C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include;$(LibraryPath)</LibraryPath>
+    <LocalRemoteCopySources>true</LocalRemoteCopySources>
+    <SourcePath>C:\Users\me\OneDrive\dev\vds\linux\src;$(SourcePath)</SourcePath>
+    <RemoteCompileLocalCopyObjectFiles>true</RemoteCompileLocalCopyObjectFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\me\OneDrive\dev\vds\linux\lib\vectornav-firmware-1.1\c\include;C:\Users\me\OneDrive\dev\vds\linux\src;C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include;C:\Users\me\OneDrive\dev\vds\linux\lib\BlackLib\v3_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>

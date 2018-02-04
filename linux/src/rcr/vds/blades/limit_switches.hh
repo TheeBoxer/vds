@@ -1,7 +1,7 @@
 #ifndef _RCR_VDS_BLADES_LIMITSWITCHES_HH_
 #define _RCR_VDS_BLADES_LIMITSWITCHES_HH_
 
-#include <mediator.hpp>
+#include <cpp_mediator/mediator.hpp>
 
 namespace rcr {
 namespace vds {
