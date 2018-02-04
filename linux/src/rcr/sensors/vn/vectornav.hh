@@ -1,13 +1,16 @@
 #ifndef _RCR_SENSORS_VECTORNAV_HH_
 #define _RCR_SENSORS_VECTORNAV_HH_
 
-#include <BlackSPI/BlackSPI.h>
-#include <cpp_mediator/mediator.hpp>
-#include <vn/sensors.h>
-#include <rcr/publish.h>
+#include "../../../../lib/BlackLib/v3_0/BlackSPI/BlackSPI.h"
+#include "../../../../lib/cpp-mediator/include/cpp_mediator/mediator.hpp"
+#include "../../../../lib/vectornav-firmware-1.1/c/include/vn/sensors.h"
+#include "../../util/publish.h"
+
+#define MAX_PUBLISH_DETAIL 10
 
 namespace rcr {
 namespace sensors {
+namespace vn {
 
 namespace structs {
   struct Vec3f { float    x, y, z; };
@@ -89,6 +92,7 @@ class VectorNavHandler
   vec4f vec4f_{};
 };
 
+} // namespace vn
 } // namespace sensors
 } // namespace rcr
 

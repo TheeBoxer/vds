@@ -1,6 +1,8 @@
 #ifndef _RCR_PUBLISH_H_
 #define _RCR_PUBLISH_H_
 
+#include <stdio.h>
+
 #ifndef MAX_PUBLISH_DETAIL
 #define MAX_PUBLISH_DETAIL -1
 #endif

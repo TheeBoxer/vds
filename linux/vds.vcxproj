@@ -27,7 +27,36 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\rcr\rcr_maths.h" />
+    <ClInclude Include="lib\cpp-mediator\include\cpp_mediator\mediator.hpp" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\bool.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\const.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\conv.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\enum.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\error.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\error_detection.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\int.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\math\matrix.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\math\vector.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\protocol\common.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\protocol\spi.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\protocol\upack.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\protocol\upackf.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\sensors.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\sensors\compositedata.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\sensors\ezasyncdata.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\sensors\searcher.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\types.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\util.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\util\compiler.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\util\export.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\util\port.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\vectornav.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\xplat\criticalsection.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\xplat\event.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\xplat\serialport.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\xplat\thread.h" />
+    <ClInclude Include="lib\vectornav-firmware-1.1\c\include\vn\xplat\time.h" />
+    <ClInclude Include="src\rcr\maths\rcr_maths.hh" />
     <ClInclude Include="src\rcr\sensors\vn\vectornav.hh" />
     <ClInclude Include="src\rcr\util\publish.h" />
     <ClInclude Include="src\rcr\vds\blades\limit_switches.hh" />
@@ -35,6 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\rcr\vds\io\pin_io.cc" />
+    <ClCompile Include="src\rcr\vds\vds.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{72f39a3a-ab57-4361-97c7-1df8d1aa87fe}</ProjectGuid>
@@ -72,10 +105,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\me\OneDrive\dev\vds\linux\lib\BlackLib\v3_0;C:\Users\me\OneDrive\dev\vds\linux\lib\vectornav-firmware-1.1\c\include;C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\me\OneDrive\dev\vds\linux\lib\vectornav-firmware-1.1\c\include;C:\Users\me\OneDrive\dev\vds\linux\lib\BlackLib\v3_0;C:\Users\me\OneDrive\dev\vds\linux\src;C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
     <LocalRemoteCopySources>true</LocalRemoteCopySources>
-    <SourcePath>C:\Users\me\OneDrive\dev\vds\linux\src;$(SourcePath)</SourcePath>
+    <SourcePath>C:\Users\me\OneDrive\dev\vds\linux\lib\vectornav-firmware-1.1\c\include;C:\Users\me\OneDrive\dev\vds\linux\lib\BlackLib\v3_0\;C:\Users\me\OneDrive\dev\vds\linux\lib\cpp-mediator\include\;C:\Users\me\OneDrive\dev\vds\linux\src;$(SourcePath)</SourcePath>
     <RemoteCompileLocalCopyObjectFiles>true</RemoteCompileLocalCopyObjectFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -1,7 +1,7 @@
 #ifndef _RCR_VDS_IO_PINIO_HH_
 #define _RCR_VDS_IO_PINIO_HH_
 
-#include <cpp_mediator/mediator.hpp>
+#include "../../../../lib/cpp-mediator/include/cpp_mediator/mediator.hpp"
 
 #include <cstdint>
 

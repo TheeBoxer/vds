@@ -1,23 +1,30 @@
-default : build
+cxx = g++
+cxxflags=-Wall -pedantic
 
-b : build
+csrc = 
+ccsrc = $(wildcard src/rcr/*.cc) \
+        $(wildcard src/rcr/beaglebone/io/file/*.cc) \
+        $(wildcard src/rcr/sensors/vn/*.cc) \
+        $(wildcard src/rcr/util/*.cc) \
+        $(wildcard src/rcr/vds/*.cc) \
+        $(wildcard src/rcr/vds/blades/*.cc) \
+        $(wildcard src/rcr/vds/io/*.cc)
+obj = $(patsubst src%.cc,build%.o, $(SRCS))
+
+all: $(dir $@)
+
+build/%.o: src/%.cc
+	@mkdir -p $(dir $@)
+	$(CXX) -c -o $@ $^ $(CXXFLAGS)
+
+out = vds
+inc_dirs = lib/cpp-mediator/include/
+inc_params = $(foreach d, $(inc_dirs), -I$d)
+
+vds: $(obj)
+	echo $(obj)
+	$(cxx) $(cxxflags) -I/lib/cpp-mediator/include -o $(out) $^ $(objs)
+
 c : clean
-r : rebuild
-rebuild : c b
-
-
-
-CC=g++
-CFLAGS=-Wall
-OUT_EXE=vds
-SOURCE_FILES=$(wildcard src/rcr/vds/*.hh)
-OBJECTS=$(SOURCE_FILES:.cc=.o)
-
-INCLUDE_DIRS=$(FRUIT_DIR)
-INC_PARAMS=$(foreach d, $(INCLUDE_DIRS), -I$d)
-
-build: $(SOURCE_FILES)
-	$(CC) $(CFLAGS) -o $(OUT_EXE) $(SOURCE_FILES)
-
 clean:
-	rm -f $(OUT_EXE) $(OBJECTS)
+	rm -f *.o *~ $(out) build/
