@@ -17,12 +17,6 @@ include_directories(lib/cpp-mediator/include/)
 
 
 add_subdirectory(lib/vectornav-firmware-1.1/c/ libvnc)
-
-#project(vectornav)
-#file(GLOB_RECURSE vectornav_sources lib/vectornav-firmware-1.1/c/*.c)
-#add_library(vectornav ${vectornav_sources})
-#target_include_directories(vectornav INTERFACE lib/vectornav-firmware-1.1/c/include/)
-#set_target_properties(vectornav PROPERTIES LINKER_LANGUAGE C)
 include_directories(lib/vectornav-firmware-1.1/c/include/)
 
 include_directories(lib/googletest/googletest/include/)
