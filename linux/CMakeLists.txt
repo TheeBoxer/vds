@@ -30,12 +30,9 @@ include_directories(lib/googletest/googletest/include/)
 include_directories(src/)
 file(GLOB_RECURSE vds_sources src/*.cc)
 add_executable(vds ${vds_sources})
-target_link_libraries(vds
-  ${blacklib}
-  ${mediator}
-  ${vectornav}
-  )
+target_link_libraries(vds LINK_PUBLIC blacklib)
 target_link_libraries(vds LINK_PUBLIC libvnc)
+target_link_libraries(vds LINK_PUBLIC mediator)
 
 if (UNIX OR APPLE)
 	target_link_libraries(vds LINK_PUBLIC pthread)
