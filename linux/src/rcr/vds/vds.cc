@@ -1,5 +1,5 @@
-#include "lib/cpp-mediator/include/cpp_mediator/mediator.hpp"
-#include "src/rcr/sensors/vn/vectornav.hh"
+#include <cpp_mediator/mediator.hpp>
+#include <rcr/sensors/vn/vectornav.hh>
 
 #include <memory>
 
