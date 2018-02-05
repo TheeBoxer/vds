@@ -1,19 +1,15 @@
-[submodule "linux/lib/googletest"]
-	path = linux/lib/googletest
-	url = https://github.com/google/googletest
-[submodule "linux/lib/fruit"]
-	path = linux/lib/fruit
-	url = https://github.com/google/fruit
-[submodule "linux/lib/cpp-mediator"]
-	path = linux/lib/cpp-mediator
-	url = https://github.com/nolanholden/cpp-mediator
-
-[submodule "linux/lib/vectornav-firmware-1.1"]
-	path = linux/lib/vectornav-firmware-1.1
-	url = https://github.com/nolanholden/vectornav-firmware-1.1
-[submodule "linux/lib/bbb"]
-	path = linux/lib/bbb
-	url = https://github.com/petermancuso/bbb
 [submodule "linux/lib/BlackLib"]
 	path = linux/lib/BlackLib
 	url = https://github.com/yigityuce/BlackLib
+[submodule "linux/lib/cpp-mediator"]
+	path = linux/lib/cpp-mediator
+	url = https://github.com/nolanholden/cpp-mediator
+[submodule "linux/lib/fruit"]
+	path = linux/lib/fruit
+	url = https://github.com/google/fruit
+[submodule "linux/lib/googletest"]
+	path = linux/lib/googletest
+	url = https://github.com/google/googletest
+[submodule "linux/lib/vectornav-firmware-1.1"]
+	path = linux/lib/vectornav-firmware-1.1
+	url = https://github.com/nolanholden/vectornav-firmware-1.1
