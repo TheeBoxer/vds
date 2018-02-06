@@ -1,0 +1,6 @@
+#! /bin/bash
+dtc -O dtb -o spi0-00a0.dtbo -b 0 -@ spi0-00a0.dts
+dtc -O dtb -o spi1-00a0.dtbo -b 0 -@ spi1-00a0.dts
+cp -r spi0-00a0.dtbo spi1-00a0.dtbo /lib/firmware
+rm -rf spi*
+
