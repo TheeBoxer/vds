@@ -15,7 +15,6 @@ target_include_directories(mediator INTERFACE lib/cpp-mediator/include/)
 set_target_properties(mediator PROPERTIES LINKER_LANGUAGE CXX)
 include_directories(lib/cpp-mediator/include/)
 
-
 add_subdirectory(lib/vectornav-firmware-1.1/c/ libvnc)
 include_directories(lib/vectornav-firmware-1.1/c/include/)
 
@@ -28,6 +27,4 @@ target_link_libraries(vds LINK_PUBLIC libvnc)
 target_link_libraries(vds LINK_PUBLIC mediator)
 target_link_libraries(vds LINK_PUBLIC bbc)
 
-if (UNIX OR APPLE)
-	target_link_libraries(vds LINK_PUBLIC pthread)
-endif()
+target_link_libraries(vds LINK_PUBLIC pthread)

@@ -83,8 +83,8 @@ class VectorNavHandler
       &response_size);
     PUBLISH(1, "generated read yaw, pitch, roll command with");
     PUBLISH(1, "  error:                  %d", gen_error);
-    PUBLISH(1, "  command size:           %lu", txcommand_size);
-    PUBLISH(1, "  expected response size: %lu", response_size);
+    PUBLISH(1, "  command size:           %u", txcommand_size);
+    PUBLISH(1, "  expected response size: %u", response_size);
     PUBLISH(1, "  ");
     DO_AND_PUBLISH(for(auto i=0; i<txcommand_size; ++i) PUBLISH(1, "%x, ", txbuf[i]), 1, "");
 
