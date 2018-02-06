@@ -11,6 +11,7 @@
 #include <vn/protocol/spi.h>
 #include <vn/xplat/thread.h>
 
+#include <algorithm>
 #include <climits>
 #include <iostream>
 #include <type_traits>
@@ -71,18 +72,23 @@ class VectorNavHandler
 
     std::uint8_t txbuf[0x100];
     std::uint8_t rxbuf[0x100];
-    std::size_t txcommand_size = 0;
-    std::size_t responseSize;
+    std::size_t txcommand_size = sizeof(txbuf);
+    std::size_t response_size = 0;
     char strConversions[50];
 
-    beaglebone::io::spi::WriteRead request{txbuf, rxbuf, responseSize};
-
     auto gen_error = VnSpi_genReadYawPitchRoll(
-      reinterpret_cast<char*>(request.tx_bytes),
+      reinterpret_cast<char*>(txbuf),
       &txcommand_size,
       0,
-      &request.rx_bytes_size);
-    PUBLISH(0, "generated read yaw, pitch, roll command with result %d\n", gen_error);
+      &response_size);
+    PUBLISH(1, "generated read yaw, pitch, roll command with\n");
+    PUBLISH(1, "  error:                  %d\n", gen_error);
+    PUBLISH(1, "  command size:           %lu\n", txcommand_size);
+    PUBLISH(1, "  expected response size: %lu\n", response_size);
+    PUBLISH(1, "  ");
+    DO_AND_PUBLISH(for(auto i=0; i<txcommand_size; ++i) PUBLISH(1, "%x, ", txbuf[i]), 1, "\n");
+
+    beaglebone::io::spi::WriteRead request{txbuf, rxbuf, std::max(txcommand_size, response_size)};
 
     mediator_.send(request);
     VnThread_sleepUs(100);

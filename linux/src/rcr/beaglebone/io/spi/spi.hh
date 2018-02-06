@@ -2,7 +2,6 @@
 #define _RCR_BEAGLEBONE_IO_SPI_SPI_HH_
 
 #include <cpp_mediator/mediator.hpp>
-#include <BlackSPI/BlackSPI.h>
 
 #include <cstdint>
 
@@ -15,12 +14,12 @@ class SpiHandler;
 struct IsOpen    : holden::request<bool, SpiHandler> {};
 struct Open      : holden::request<bool, SpiHandler> {};
 struct WriteRead : holden::request<bool, SpiHandler> {
-  WriteRead(uint8_t* tx_bytes, uint8_t* rx_bytes, size_t rx_bytes_size)
-    : tx_bytes(tx_bytes), rx_bytes(rx_bytes)
-    , rx_bytes_size(rx_bytes_size) {}
+  // buffers for both tx and rx message bytes. length of each (must be equal).
+  WriteRead(uint8_t* tx_bytes, uint8_t* rx_bytes, size_t length)
+    : tx_bytes(tx_bytes), rx_bytes(rx_bytes), length(length) {}
   uint8_t* tx_bytes;
   uint8_t* rx_bytes;
-  size_t rx_bytes_size;
+  size_t length;
 };
 
 class SpiHandler
