@@ -20,3 +20,9 @@ make
 sudo apt-get update
 sudo apt-get install g++-arm-linux-gnueabihf
 ```
+
+# Linux Computer Configuration
++ To support SPI comm, execute the `./config/spi/setup_spi/` bash script with root privileges on the target machine.
+```sh
+sudo setup_spi
+```
