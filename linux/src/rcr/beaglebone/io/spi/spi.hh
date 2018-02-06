@@ -28,6 +28,7 @@ class SpiHandler
   , public holden::request_handler<WriteRead> {
  public:
   SpiHandler(holden::mediator& m) : mediator_(m) {}
+  
   bool handle(const IsOpen& m);
   bool handle(const Open& m);
   bool handle(const WriteRead& m);

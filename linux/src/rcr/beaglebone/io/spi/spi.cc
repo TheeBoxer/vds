@@ -12,7 +12,7 @@ namespace sdata {
   spi_properties spi_props{0, spi0, 8, 0, 8*1000*1000, O_RDWR};
 } // namespace sdata
 
-inline bool
+bool
 SpiHandler::handle(const IsOpen& m) { return sdata::is_open; }
 
 inline bool
@@ -23,10 +23,11 @@ SpiHandler::handle(const Open& m) {
 
 inline bool
 SpiHandler::handle(const WriteRead& m) {
-  spi_transfer(&sdata::spi_props, m.tx_bytes, m.rx_bytes, m.length);
+  return spi_transfer(&sdata::spi_props, m.tx_bytes, m.rx_bytes, m.length)
+    == 0;
 }
 
-} // namespace spihandle
+} // namespace spi
 } // namespace io
 } // namespace beaglebone
 } // namespace rcr
