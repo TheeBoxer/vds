@@ -8,6 +8,13 @@ target_include_directories(blacklib INTERFACE lib/BlackLib/v3_0/)
 set_target_properties(blacklib PROPERTIES LINKER_LANGUAGE CXX)
 include_directories(lib/BlackLib/v3_0/)
 
+project(bbc)
+file(GLOB_RECURSE bbc_sources lib/beaglebone-c/src/*.c)
+add_library(bbc ${bbc_sources})
+target_include_directories(bbc INTERFACE lib/beaglebone-c/include/)
+set_target_properties(bbc PROPERTIES LINKER_LANGUAGE C)
+include_directories(lib/beaglebone-c/include/)
+
 project(mediator)
 file(GLOB_RECURSE mediator_sources lib/cpp-mediator/include/*.cc)
 add_library(mediator ${mediator_sources})
