@@ -65,7 +65,7 @@ class VectorNavHandler
   VectorNavHandler(holden::mediator& m) : mediator_(m) {}
 
   void handle(const PrintAllStatus& m) {
-    PUBLISH(1, "responding to PrintAllStatus request\n");
+    PUBLISH(1, "responding to PrintAllStatus request");
     if (m.file == NULL || m.print == NULL) {
       printf("ERRR");
     }
@@ -81,12 +81,12 @@ class VectorNavHandler
       &txcommand_size,
       0,
       &response_size);
-    PUBLISH(1, "generated read yaw, pitch, roll command with\n");
-    PUBLISH(1, "  error:                  %d\n", gen_error);
-    PUBLISH(1, "  command size:           %lu\n", txcommand_size);
-    PUBLISH(1, "  expected response size: %lu\n", response_size);
+    PUBLISH(1, "generated read yaw, pitch, roll command with");
+    PUBLISH(1, "  error:                  %d", gen_error);
+    PUBLISH(1, "  command size:           %lu", txcommand_size);
+    PUBLISH(1, "  expected response size: %lu", response_size);
     PUBLISH(1, "  ");
-    DO_AND_PUBLISH(for(auto i=0; i<txcommand_size; ++i) PUBLISH(1, "%x, ", txbuf[i]), 1, "\n");
+    DO_AND_PUBLISH(for(auto i=0; i<txcommand_size; ++i) PUBLISH(1, "%x, ", txbuf[i]), 1, "");
 
     beaglebone::io::spi::WriteRead request{txbuf, rxbuf, std::max(txcommand_size, response_size)};
 
@@ -98,7 +98,7 @@ class VectorNavHandler
       reinterpret_cast<const char*>(rxbuf),
       &vec3f_);
     PUBLISH(1, "yaw, pitch, roll parsed with result %d", parse_error);
-    DO_AND_PUBLISH(str_vec3f(strConversions, vec3f_), 0, "Current YPR: %s\n", strConversions);
+    DO_AND_PUBLISH(str_vec3f(strConversions, vec3f_), 0, "Current YPR: %s", strConversions);
   }
 
  private:
