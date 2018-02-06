@@ -1,7 +1,6 @@
 #include <rcr/beaglebone/io/spi/spi.hh>
 
 #include <bbc/spi.h>
-#include <BlackSPI/BlackSPI.h>
 
 namespace rcr {
 namespace beaglebone {
@@ -11,7 +10,6 @@ namespace spi {
 namespace sdata {
   bool is_open = false;
   spi_properties spi_props{0, spi0, 8, 0, 8*1000*1000, O_RDWR};
-  BlackLib::BlackSPI spi{ BlackLib::SPI0_0, 8, BlackLib::SpiDefault, 8000000 };
 } // namespace sdata
 
 inline bool
