@@ -10,7 +10,7 @@ namespace rcr {
 namespace vds {
 
 namespace sdata {
-  constexpr const char* const kFlightLogFilename = "/home/me/flight_log";
+  constexpr const char* const kFlightLogFilename = "~/flight_log";
   constexpr const char* const kFileIoMode = "a";
   holden::mediator m{};
   auto vn_handler = std::make_shared<sensors::vn::VectorNavHandler>(m);
