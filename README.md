@@ -8,7 +8,9 @@ To build, use the CMake flag `-DCMAKE_TOOLCHAIN_FILE=arm-linux-gnueabihf.cmake`.
 ```sh
 git clone https://github.com/nolanholden/vds.git
 mkdir vds/linux/build && cd vds/linux/build
-cmake ../ -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
+cmake ../ -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
+# or, to debug:
+# cmake ../ -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
 make
 # there should now be an executable `vds` in the immediate directory
 ```
