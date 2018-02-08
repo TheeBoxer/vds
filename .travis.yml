@@ -8,7 +8,7 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-5.0
     packages:
-      - /usr/bin/arm-linux-gnueabihf-g++
+      - g++-arm-linux-gnueabihf
       - clang-5.0
 
 before_install:
