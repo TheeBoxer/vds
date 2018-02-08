@@ -15,7 +15,8 @@ before_install:
 script:
   - mkdir linux/build && cd linux/build
   - cmake -DCOVERAGE=1 ../
-  - cmake --build ../ -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
+  - cmake ../ -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
+  - make
 
 after_success:
   - coveralls --root . -E ".*CMakeFiles.*" 
