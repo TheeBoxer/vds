@@ -1,4 +1,5 @@
 #include <rcr/beaglebone/io/spi/spi.hh>
+#include <rcr/util/publish.h>
 
 #include <bbc/spi.h>
 
