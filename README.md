@@ -8,7 +8,9 @@ To build, use the CMake flag `-DCMAKE_TOOLCHAIN_FILE=arm-linux-gnueabihf.cmake`.
 ```sh
 git clone https://github.com/nolanholden/vds.git
 mkdir vds/linux/build && cd vds/linux/build
-cmake ../ -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
+cmake ../ -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
+# or, to debug:
+# cmake ../ -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
 make
 # there should now be an executable `vds` in the immediate directory
 ```
@@ -19,4 +21,10 @@ make
 ```sh
 sudo apt-get update
 sudo apt-get install g++-arm-linux-gnueabihf
+```
+
+## Linux Computer Configuration
++ To support SPI comm, execute the `linux/config/spi/setup_spi/` bash script with root privileges on the target machine.
+```sh
+sudo setup_spi
 ```

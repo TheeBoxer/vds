@@ -6,18 +6,16 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-trusty-5.0
     packages:
-      - g++-6
-      - clang-5.0
+      - g++-arm-linux-gnueabihf
 
 before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - CXX=/usr/bin/g++-6 CC=/usr/bin/gcc-6 cmake -DCOVERAGE=1 .
-  - cmake --build linux/
-  - linux/tests
+  - mkdir linux/build && cd linux/build
+  - cmake -DCOVERAGE=1 ../
+  - cmake --build ../ -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
 
 after_success:
   - coveralls --root . -E ".*CMakeFiles.*" 
