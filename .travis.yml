@@ -15,7 +15,7 @@ before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - CXX=/usr/bin/arm-linux-gnueabihf-g++ CC=/usr/bin/arm-linux-gnueabihf-gcc cmake linux/ -DCMAKE_TOOLCHAIN_FILE=./linux/arm-linux-gnueabihf.cmake -DCOVERAGE=1 .
+  - CXX=/usr/bin/arm-linux-gnueabihf-g++ CC=/usr/bin/arm-linux-gnueabihf-gcc cmake ./linux/ -DCMAKE_TOOLCHAIN_FILE=./linux/arm-linux-gnueabihf.cmake -DCOVERAGE=1 ./linux
   - cmake --build linux/
   - linux/tests
 
