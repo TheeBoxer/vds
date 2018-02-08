@@ -26,8 +26,8 @@ SpiHandler::handle(const Open& m) {
 inline bool
 SpiHandler::handle(const WriteRead& m) {
   PUBLISH(15, "sending: ");
-  count++;
-  DO_AND_PUBLISH(for(auto i=0; i<m.length; ++i) PUBLISH(1, "%x ", (m.tx_bytes[i]+=count)), 15, "");
+  sdata::count++;
+  DO_AND_PUBLISH(for(auto i=0; i<m.length; ++i) PUBLISH(1, "%x ", (m.tx_bytes[i]+=sdata::count)), 15, "");
   
   bool ok = spi_transfer(&sdata::spi_props, m.tx_bytes, m.rx_bytes, m.length) == 0;
   
