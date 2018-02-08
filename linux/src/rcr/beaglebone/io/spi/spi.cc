@@ -23,8 +23,15 @@ SpiHandler::handle(const Open& m) {
 
 inline bool
 SpiHandler::handle(const WriteRead& m) {
-  return spi_transfer(&sdata::spi_props, m.tx_bytes, m.rx_bytes, m.length)
-    == 0;
+  PUBLISH(15, "sending: ");
+  DO_AND_PUBLISH(for(auto i=0; i<m.length; ++i) PUBLISH(1, "%x ", m.tx_bytes[i]), 15, "");
+  
+  bool ok = spi_transfer(&sdata::spi_props, m.tx_bytes, m.rx_bytes, m.length) == 0;
+  
+  PUBLISH(15, "received: ");
+  DO_AND_PUBLISH(for(auto i=0; i<m.length; ++i) PUBLISH(1, "%x ", m.rx_bytes[i]), 15, "");
+  
+  return ok;
 }
 
 } // namespace spi
