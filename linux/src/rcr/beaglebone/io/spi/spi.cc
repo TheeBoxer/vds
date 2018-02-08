@@ -9,7 +9,6 @@ namespace io {
 namespace spi {
 
 namespace sdata {
-  int count = 0;
   bool is_open = false;
   spi_properties spi_props{0, spi0, 32, 1, 8*1000*1000, O_RDWR};
 } // namespace sdata
@@ -26,8 +25,7 @@ SpiHandler::handle(const Open& m) {
 inline bool
 SpiHandler::handle(const WriteRead& m) {
   PUBLISH(15, "sending: ");
-  sdata::count++;
-  DO_AND_PUBLISH(for(auto i=0; i<m.length; ++i) PUBLISH(1, "%x ", (m.tx_bytes[i]+=sdata::count)), 15, "");
+  DO_AND_PUBLISH(for(auto i=0; i<m.length; ++i) PUBLISH(1, "%x ", m.tx_bytes[i]), 15, "");
   
   bool ok = spi_transfer(&sdata::spi_props, m.tx_bytes, m.rx_bytes, m.length) == 0;
   
