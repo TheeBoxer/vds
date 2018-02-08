@@ -33,7 +33,7 @@ while(1) {
   flight_log = fopen(kFlightLogFilename, kFileIoMode);
   if (flight_log) {
     fprintf(flight_log, "yo dawg\n");
-    //m.send(vn_request_all);
+    m.send(vn_request_all);
     fclose(flight_log);
   } else {
     printf("fatal error: \"/tmp/vds_flight_log\" could not open");
