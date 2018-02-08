@@ -2,10 +2,8 @@
 
 #include <iostream>
 
-struct Project
-{
-  static void Foo() 
-  {
+struct Project {
+  static void Foo() {
     std::cout << "hello world" << std::endl;
   }
 };
