@@ -20,15 +20,21 @@
 #if MAX_PUBLISH_DETAIL > -1
 #  define PUBLISH(level, format, ...) \
     do { \
-      if (level <= MAX_PUBLISH_DETAIL) { \
-        printf("%s:%i: "#format"\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+      FILE* fd = NULL; \
+      fd = fopen("/tmp/vds_publish_status", "a"); \
+      if (fd && level <= MAX_PUBLISH_DETAIL) { \
+        fprintf(fd, "%s:%i: "#format"\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+        fclose(fd); \
       } \
     } while (0)
 #  define DO_AND_PUBLISH(func_call, level, format,...) \
     do { \
-      if (level <= MAX_PUBLISH_DETAIL) { \
+      FILE* fd = NULL; \
+      fd = fopen("/tmp/vds_publish_status", "a"); \
+      if (fd && level <= MAX_PUBLISH_DETAIL) { \
         func_call; \
-        printf("%s:%i: "#format"\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+        fprintf(fd, "%s:%i: "#format"\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+        fclose(fd); \
       } \
     } while (0)
 #else
