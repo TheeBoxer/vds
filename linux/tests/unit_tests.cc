@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-TEST(test, empty)
-{
+TEST(test, empty) {
   Project::Foo();
 }
