@@ -23,8 +23,9 @@ namespace sdata {
 } // namespace rcr
 
 int main() {
+  printf("vds starting");
   using namespace rcr::vds::sdata;
-   
+  
   m.register_handler(vn_handler);
   m.register_handler(spi_handler);
   m.send(rcr::beaglebone::io::spi::Open{});

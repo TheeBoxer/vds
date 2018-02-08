@@ -59,7 +59,6 @@ struct PrintAllStatus : holden::request<void, VectorNavHandler> {
 };
 
 class VectorNavHandler
-  //: public holden::request_handler<GetAttitudeQuaternion>
   : public holden::request_handler<PrintAllStatus> {
  public:
   VectorNavHandler(holden::mediator& m) : mediator_(m) {}
@@ -87,34 +86,37 @@ class VectorNavHandler
     std::size_t response_size = 0;
     char strConversions[50];
 
-    auto gen_error = VnSpi_genReadYawPitchRoll(
+    auto gen_error = VnSpi_genReadImuMeasurements(
       reinterpret_cast<char*>(txbuf),
       &txcommand_size,
       0,
       &response_size);
-    PUBLISH(1, "generated read yaw, pitch, roll command with");
-    PUBLISH(1, "  error:                  %d", gen_error);
-    PUBLISH(1, "  command size:           %u", txcommand_size);
-    PUBLISH(1, "  expected response size: %u", response_size);
-    PUBLISH(1, "  ");
-    DO_AND_PUBLISH(for(auto i=0; i<txcommand_size; ++i) PUBLISH(1, "%x, ", txbuf[i]), 1, "");
+    PUBLISH(1, "VnSpi_genReadImuMeasurements generated with result %d", gen_error);
 
     beaglebone::io::spi::WriteRead request{txbuf, rxbuf, std::max(txcommand_size, response_size)};
 
     mediator_.send(request);
-    VnThread_sleepUs(100);
+    VnThread_sleepUs(1000);
     mediator_.send(request);
 
-    auto parse_error = VnSpi_parseYawPitchRoll(
+    auto parse_error = VnSpi_parseImuMeasurements(
       reinterpret_cast<const char*>(rxbuf),
-      &vec3f_);
-    PUBLISH(1, "yaw, pitch, roll parsed with result %d", parse_error);
-    DO_AND_PUBLISH(str_vec3f(strConversions, vec3f_), 0, "Current YPR: %s", strConversions);
+      &accel_, &mag_, &gyro_, &temp_, &pressure_);
+
+    PUBLISH(1, "VnSpi_parseImuMeasurements parsed with result %d", parse_error);
+    DO_AND_PUBLISH(str_vec3f(strConversions, accel_), 3, "  accel:    %s", strConversions);
+    DO_AND_PUBLISH(str_vec3f(strConversions, mag_), 3,   "  mag:      %s", strConversions);
+    DO_AND_PUBLISH(str_vec3f(strConversions, gyro_), 3,  "  gyro:     %s", strConversions);
+    PUBLISH(3, "  temp:     %f", temp_);
+    PUBLISH(3, "  pressure: %f", pressure_);
   }
 
  private:
   // Reference to the mediator to request dependancies.
   holden::mediator& mediator_;
+
+  vec3f accel_{}, mag_{}, gyro_{};
+  float temp_ = 0.f, pressure_ = 0.f;
 
   // reusable types for api interfacing.
   // use only transiently.
