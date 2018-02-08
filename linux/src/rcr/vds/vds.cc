@@ -10,7 +10,7 @@ namespace rcr {
 namespace vds {
 
 namespace sdata {
-  constexpr const char* const kFlightLogFilename = "~/flight_log";
+  constexpr const char* const kFlightLogFilename = "/tmp/vds_flight_log";
   constexpr const char* const kFileIoMode = "a";
   holden::mediator m{};
   auto vn_handler = std::make_shared<sensors::vn::VectorNavHandler>(m);
@@ -28,12 +28,16 @@ int main() {
   m.register_handler(vn_handler);
   m.register_handler(spi_handler);
   m.send(rcr::beaglebone::io::spi::Open{});
-for (;;) {
+while(1) {
+  flight_log = NULL;
   flight_log = fopen(kFlightLogFilename, kFileIoMode);
-  if (!flight_log) printf("ERRRRRRRRRRRRRRRRRR");
-  fprintf(flight_log, "yo dawg\n");
-  m.send(vn_request_all);
-  fclose(flight_log);
+  if (flight_log) {
+    fprintf(flight_log, "yo dawg\n");
+    //m.send(vn_request_all);
+    fclose(flight_log);
+  } else {
+    printf("fatal error: \"/tmp/vds_flight_log\" could not open");
+  }
 }
 
   return 0;
