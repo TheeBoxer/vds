@@ -8,14 +8,14 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-5.0
     packages:
-      - g++-6
+      - /usr/bin/arm-linux-gnueabihf-g++
       - clang-5.0
 
 before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - CXX=/usr/bin/g++-6 CC=/usr/bin/gcc-6 cmake -DCOVERAGE=1 .
+  - CXX=/usr/bin/arm-linux-gnueabihf-g++ CC=/usr/bin/arm-linux-gnueabihf-gcc cmake -DCMAKE_TOOLCHAIN_FILE=./linux/arm-linux-gnueabihf.cmake -DCOVERAGE=1 .
   - cmake --build linux/
   - linux/tests
 
