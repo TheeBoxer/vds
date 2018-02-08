@@ -66,10 +66,21 @@ class VectorNavHandler
 
   void handle(const PrintAllStatus& m) {
     PUBLISH(1, "responding to PrintAllStatus request");
-    if (m.file == NULL || m.print == NULL) {
-      printf("ERRR");
+    if (m.file == NULL) {
+      PUBLISH(1, "error: PrintAllStatus file** is null");
+      return;
     }
-
+    if (*m.file == NULL) {
+      PUBLISH(1, "error: PrintAllStatus file* is null");
+      return;
+    }
+    
+    if (m.print == NULL) {
+      PUBLISH(1, "error: PrintAllStatus print fn pointer is null");
+      return;
+    }
+    m.print(*m.file, "handled");
+    
     std::uint8_t txbuf[0x100];
     std::uint8_t rxbuf[0x100];
     std::size_t txcommand_size = sizeof(txbuf);
