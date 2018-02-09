@@ -28,7 +28,6 @@ int main() {
   
   m.register_handler(vn_handler);
   m.register_handler(spi_handler);
-  m.send(rcr::beaglebone::io::spi::Open{});
 while(1) {
   flight_log = NULL;
   flight_log = fopen(kFlightLogFilename, kFileIoMode);
