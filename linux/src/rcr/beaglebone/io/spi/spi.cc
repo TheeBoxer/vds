@@ -10,7 +10,7 @@ namespace spi {
 
 namespace sdata {
   bool is_open = false;
-  spi_properties spi_props{0, spi0, 32, 1, 100*1000, O_RDWR};
+  spi_properties spi_props{0, spi0, 32, 0, 100*1000, O_RDWR};
 } // namespace sdata
 
 bool
