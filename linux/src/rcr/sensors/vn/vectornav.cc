@@ -22,9 +22,9 @@ namespace detail {
 } // namespace detail
 
 VnError processErrorReceived(const char* errorMessage, VnError errorCode) {
-	char errorCodeStr[100];
-	strFromVnError(errorCodeStr, errorCode);
-	PUBLISH(0, "%s\nERROR: %s\n", errorMessage, errorCodeStr);
+	//char errorCodeStr[100];
+	//strFromVnError(errorCodeStr, errorCode);
+	//PUBLISH(0, "%s\nERROR: %s\n", errorMessage, errorCodeStr);
 	return errorCode;
 }
 
