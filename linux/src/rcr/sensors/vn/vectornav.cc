@@ -6,7 +6,22 @@ namespace rcr {
 namespace sensors {
 namespace vn {
 
-VnError processErrorReceived(char* errorMessage, VnError errorCode) {
+namespace detail {
+  void apivec_to_vec(vec3f& a, structs::Vec3f& b) {
+    b.x = a.c[0];
+    b.y = a.c[1];
+    b.z = a.c[2];
+  }
+
+  void apivec_to_vec(vec4f& a, structs::Vec4f& b) {
+    b.w = a.c[0];
+    b.x = a.c[1];
+    b.y = a.c[2];
+    b.z = a.c[3];
+  }
+} // namespace detail
+
+VnError processErrorReceived(const char* errorMessage, VnError errorCode) {
 	char errorCodeStr[100];
 	strFromVnError(errorCodeStr, errorCode);
 	PUBLISH(0, "%s\nERROR: %s\n", errorMessage, errorCodeStr);

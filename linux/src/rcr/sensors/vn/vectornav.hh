@@ -29,21 +29,6 @@ namespace structs {
   struct Vec4f { float w, x, y, z; };
 } // namespace structs
 
-namespace detail {
-  void apivec_to_vec(vec3f& a, structs::Vec3f& b) {
-    b.x = a.c[0];
-    b.y = a.c[1];
-    b.z = a.c[2];
-  }
-
-  void apivec_to_vec(vec4f& a, structs::Vec4f& b) {
-    b.w = a.c[0];
-    b.x = a.c[1];
-    b.y = a.c[2];
-    b.z = a.c[3];
-  }
-} // namespace detail
-
 static_assert(std::is_same<uint8_t, unsigned char>::value, "This software requires std::uint8_t to be implemented as unsigned char for uint8_t <--> char reinterpert casting.");
 static_assert(CHAR_BIT == 8, "This software requires CHAR_BIT to equal exactly 8 for uint8_t <--> char reinterpert casting.");
 
@@ -81,4 +66,3 @@ class VectorNavHandler
 } // namespace rcr
 
 #endif // _RCR_SENSORS_VECTORNAV_HH_
-
