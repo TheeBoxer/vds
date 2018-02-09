@@ -49,7 +49,7 @@ VectorNavHandler::handle(const PrintAllStatus& m) {
   VnError error = E_NONE;
   size_t i = 0;
   char strConversions[50];
-  const char SENSOR_PORT[] = "/dev/ttyS1";
+  const char SENSOR_PORT[] = "/dev/ttyS0";
   const uint32_t SENSOR_BAUDRATE = 115200;
 
   if ((error = VnEzAsyncData_initializeAndConnect(&ez, SENSOR_PORT, SENSOR_BAUDRATE)) != E_NONE)
@@ -69,7 +69,7 @@ VectorNavHandler::handle(const PrintAllStatus& m) {
 
   PUBLISH(0, "Displaying yaw, pitch, roll from new ASCII async type.\n");
   for (i = 0; i < 25; i++) {
-    VnCompositeData cd;
+    VnCompositeData cd;++++++
     VnThread_sleepMs(200);
     cd = VnEzAsyncData_currentData(&ez);
     str_vec3f(strConversions, cd.yawPitchRoll);
