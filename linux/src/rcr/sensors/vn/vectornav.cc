@@ -49,7 +49,7 @@ VectorNavHandler::handle(const PrintAllStatus& m) {
   VnError error = E_NONE;
   size_t i = 0;
   char strConversions[50];
-  const char SENSOR_PORT[] = "/dev/ttyS0";
+  const char SENSOR_PORT[] = "/dev/ttyS1";
   const uint32_t SENSOR_BAUDRATE = 115200;
 
   if ((error = VnEzAsyncData_initializeAndConnect(&ez, SENSOR_PORT, SENSOR_BAUDRATE)) != E_NONE)
