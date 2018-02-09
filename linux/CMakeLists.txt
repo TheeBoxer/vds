@@ -33,8 +33,6 @@ add_executable(vds ${vds_sources})
 target_link_libraries(vds LINK_PUBLIC libvnc)
 target_link_libraries(vds LINK_PUBLIC mediator)
 target_link_libraries(vds LINK_PUBLIC bbc)
-
-target_link_libraries(vds LINK_PUBLIC blacklib)
 target_link_libraries(vds LINK_PUBLIC pthread)
 
 # tests (with coveralls)
