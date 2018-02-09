@@ -34,11 +34,7 @@ VectorNavHandler::handle(const PrintAllStatus& m) {
   VnError error = E_NONE;
   size_t i = 0;
   char strConversions[50];
-  const char SENSOR_PORT[] = "COM1"; 	/* Windows format for physical and virtual (USB) serial port. */
-  /*const char SENSOR_PORT[] = "/dev/ttyS1"; */ /* Linux format for physical serial port. */
-  /*const char SENSOR_PORT[] = "/dev/ttyUSB0"; */ /* Linux format for virtual (USB) serial port. */
-  /*const char SENSOR_PORT[] = "/dev/tty.usbserial-FTXXXXXX"; */ /* Mac OS X format for virtual (USB) serial port. */
-  /*const char SENSOR_PORT[] = "/dev/ttyS0"; */ /* CYGWIN format. Usually the Windows COM port number minus 1. This would connect to COM1. */
+  const char SENSOR_PORT[] = "/dev/ttyS1";
   const uint32_t SENSOR_BAUDRATE = 115200;
 
   if ((error = VnEzAsyncData_initializeAndConnect(&ez, SENSOR_PORT, SENSOR_BAUDRATE)) != E_NONE)
