@@ -13,9 +13,9 @@ before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - ./build_debug
+  - sudo ./build_debug
   - rm -rf build
-  - ./build
+  - sudo ./build
 
 after_success:
   - coveralls --root . -E ".*CMakeFiles.*" 
