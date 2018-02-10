@@ -1,4 +1,4 @@
-dist: trusty
+dist: artful
 sudo: false
 language: cpp
 
