@@ -13,10 +13,9 @@ before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - mkdir linux/build && cd linux/build
-  - cmake -DCOVERAGE=1 ../
-  - cmake ../ -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf.cmake
-  - make
+  - ./build_debug
+  - rm -rf build
+  - ./build
 
 after_success:
   - coveralls --root . -E ".*CMakeFiles.*" 
