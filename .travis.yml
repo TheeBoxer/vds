@@ -1,4 +1,4 @@
-dist: trusty
+dist: artful
 sudo: false
 language: cpp
 
@@ -13,9 +13,8 @@ before_install:
   - pip install --user cpp-coveralls
 
 script:
-  - sudo ./build_debug
-  - rm -rf build
-  - sudo ./build
+  - ./build_debug.sh
+  - ./build.sh
 
 after_success:
   - coveralls --root . -E ".*CMakeFiles.*" 
