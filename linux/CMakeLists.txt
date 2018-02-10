@@ -16,10 +16,6 @@ include_directories(lib/vectornav-firmware-1.1/c/include/)
 # googletest
 include_directories(lib/googletest/googletest/include/)
 
-# help resolve c++ <limits>
-include_directories(/usr/arm-linux-gnueabihf/)
-include_directories(/usr/arm-linux-gnueabihf/usr/arm-linux-gnueabihf/lib/)
-
 # vds src
 include_directories(src/)
 file(GLOB_RECURSE vds_sources src/*.cc)
