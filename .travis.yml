@@ -9,6 +9,7 @@ addons:
       - gcc-arm-linux-gnueabihf
 
 before_install:
+  - sudo apt-get install g++-7-arm-linux-gnueabihf
   - pip install --user cpp-coveralls
 
 script:
