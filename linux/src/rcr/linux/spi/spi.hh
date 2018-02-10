@@ -15,14 +15,14 @@ typedef enum {
 
 struct spi_properties {
 	spi_properties(
-		int fd,
-		spi spi_id,
-		uint8_t bits_per_word,
-		uint8_t mode,
-		uint32_t speed,
-		uint8_t flags)
-	  : fd(fd), spi_id(spi_id), bits_per_word(bits_per_word), mode(mode)
-	  , speed(speed), flags(flags) {}
+		int _fd,
+		spi _spi_id,
+		uint8_t _bits_per_word,
+		uint8_t _mode,
+		uint32_t _speed,
+		uint8_t _flags)
+	  : fd(_fd), spi_id(_spi_id), bits_per_word(_bits_per_word), mode(_mode)
+	  , speed(_speed), flags(_flags) {}
 	int fd;
 	spi spi_id;
 	uint8_t bits_per_word; /*!< @brief is used to hold the bits per word size of SPI */
