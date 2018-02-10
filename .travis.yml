@@ -1,12 +1,12 @@
-dist: artful
+dist: trusty
 sudo: false
 language: cpp
 
 addons:
   apt:
     packages:
-      - g++-7-arm-linux-gnueabihf
-      - gcc-7-arm-linux-gnueabihf
+      - g++-arm-linux-gnueabihf
+      - gcc-arm-linux-gnueabihf
 
 before_install:
   - pip install --user cpp-coveralls
