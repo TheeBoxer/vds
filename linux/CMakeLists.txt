@@ -1,14 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(vds)
 
-# beaglebone-c
-project(bbc)
-file(GLOB_RECURSE bbc_sources lib/beaglebone-c/src/*.cc)
-add_library(bbc ${bbc_sources})
-target_include_directories(bbc INTERFACE lib/beaglebone-c/include/)
-set_target_properties(bbc PROPERTIES LINKER_LANGUAGE CXX)
-include_directories(lib/beaglebone-c/include/)
-
 # cpp-mediator
 project(mediator)
 file(GLOB_RECURSE mediator_sources lib/cpp-mediator/include/*.cc)
@@ -32,7 +24,6 @@ file(GLOB_RECURSE vds_sources src/*.cc)
 add_executable(vds ${vds_sources})
 target_link_libraries(vds LINK_PUBLIC libvnc)
 target_link_libraries(vds LINK_PUBLIC mediator)
-target_link_libraries(vds LINK_PUBLIC bbc)
 target_link_libraries(vds LINK_PUBLIC pthread)
 
 # tests (with coveralls)
