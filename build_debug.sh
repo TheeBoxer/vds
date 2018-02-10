@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-readonly BUILD_DIR='build/'
+readonly DEBUG_BUILD_DIR='debug/'
 
-mkdir ${BUILD_DIR}
-cd    ${BUILD_DIR}
+mkdir ${DEBUG_BUILD_DIR}
+cd    ${DEBUG_BUILD_DIR}
 
 # debug
 cmake ../linux/ -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_TOOLCHAIN_FILE=../linux/arm-linux-gnueabihf.cmake
 make
+
