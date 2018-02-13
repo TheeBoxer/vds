@@ -11,7 +11,7 @@ namespace spi {
 
 namespace sdata {
   bool is_open = false;
-  linux::spi::spi_properties spi_props{0, linux::spi::spi0, 32, 1, 25000, O_RDWR};
+  linux::spi::spi_properties spi_props{0, linux::spi::spi0, 8, 1, 5000, O_RDWR};
 } // namespace sdata
 
 bool
