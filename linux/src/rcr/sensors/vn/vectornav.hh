@@ -96,7 +96,7 @@ class VectorNavHandler
     beaglebone::io::spi::WriteRead request{txbuf, rxbuf, std::max(txcommand_size, response_size)};
 
     mediator_.send(request);
-    VnThread_sleepUs(10000);
+    VnThread_sleepUs(500000);
     mediator_.send(request);
 
     auto parse_error = VnSpi_parseImuMeasurements(
